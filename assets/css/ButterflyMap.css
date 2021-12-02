@@ -1,0 +1,13 @@
+.maplibregl-ctrl-attrib-button, .mapboxgl-ctrl-attrib-button {
+    /*
+    Some libraries think it's a great idea to apply a padding to __every__ button.
+    Since maplibre uses a background image for the attribution control and does not expose the attribution button
+    component itself, this would look really bad (button way too large, multiple icons next to one another).
+    So now we've got this __great__ solution.
+    */
+    padding: 0;
+}
+
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact.mapboxgl-compact-show{
+    font-size: 1rem;
+}
