@@ -37,6 +37,7 @@ const config = {
         styles(),
         nodeResolve({
             browser: true,
+            preferBuiltins: true,
             extensions: ['.js', '.ts', '.tsx'],
         }),
         commonjs({

@@ -4,6 +4,10 @@
   "license": "MIT",
   "private": false,
   "main": "dist/react-butterfly-map.min.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/binary-butterfly/react-butterfly-map.git"
+  },
   "scripts": {
     "watch": "rollup -c rollup.config.js -w",
     "build:dev": "rollup -c rollup.config.js",
@@ -42,5 +46,15 @@
     "react-is": "^17.0.2",
     "react-map-gl": "^6.1.17",
     "styled-components": "^5.3.3"
-  }
+  },
+  "description": "This is a small react component that contains an OpenStreetMap widget with search and points of interest features.",
+  "bugs": {
+    "url": "https://github.com/binary-butterfly/react-butterfly-map/issues"
+  },
+  "homepage": "https://github.com/binary-butterfly/react-butterfly-map#readme",
+  "keywords": [
+    "react",
+    "map"
+  ],
+  "author": "binaryButterfly GmbH"
 }

@@ -10,7 +10,7 @@ or that new features might not always be entirely documented.
 
 ## How to use
 
-* Install the package: (TODO)
+* Install the package: `npm install react-butterfly-map `
 * Import the main component: `import ButterflyMap from 'react-butterfly-map'`
 * Include the component in you code similar to this example:
    ```js
