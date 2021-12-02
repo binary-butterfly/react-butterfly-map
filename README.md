@@ -1,7 +1,12 @@
 # ReactButterflyMap
 
-This is a small react component library that contains an OpenStreetMap widget with search and points of interest
+This is a small react component that contains an OpenStreetMap widget with search and points of interest
 features.
+
+## Current state
+
+This library is working as intended but still pre- 1.0 release, meaning that the API may change at any moment
+or that new features might not always be entirely documented.  
 
 ## How to use
 
