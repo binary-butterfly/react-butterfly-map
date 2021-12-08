@@ -8,6 +8,7 @@
     padding: 0;
 }
 
-.mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact.mapboxgl-compact-show{
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact.mapboxgl-compact-show, .mapboxgl-ctrl-attrib-inner a {
     font-size: 1rem;
+    font-weight: normal;
 }
