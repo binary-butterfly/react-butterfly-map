@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Button from './Button';
+import ControlBar from './ControlBar';
 import PointBar from './PointBar';
 import styled, {ThemeProvider} from 'styled-components';
 import ReactMapGL, {AttributionControl, FlyToInterpolator, Marker} from 'react-map-gl';
 import {localStringsPropTypes, dayPropTypes, hoursPropTypes} from '../data/propTypes';
 import {filterHours} from '../data/helpers';
 
-import ownCss from '../../css/ButterflyMap.css' // NOT unused.
+import ownCss from '../../css/ButterflyMap.css'; // NOT unused.
 import css from 'maplibre-gl/dist/maplibre-gl.css'; // NOT unused either.
 
 const SubMapBar = styled.div`
@@ -87,6 +88,8 @@ export const ButterflyMap = (props) => {
         buttonFontColor: props.theme?.buttonFontColor ?? 'initial',
         disabledButtonBackground: props.theme?.disabledButtonBackground ?? 'lightgray',
         disabledButtonFontColor: props.theme?.disabledButtonFontColor ?? 'white',
+        popupBackgroundColor: props.theme?.popupBackgroundColor ?? 'white',
+        highlightOptionColor: props.theme?.highlightOptionColor ?? 'lightgray',
     };
 
     const updateDisplayPointTypes = (proposedTypes, updateTypeOptions = false, showClosed = showClosedRightNow) => {
@@ -231,11 +234,21 @@ export const ButterflyMap = (props) => {
     };
 
     React.useEffect(() => {
-        if ('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                setCenterMapDisabled(false);
-                setUserPosition({latitude: position.coords.latitude, longitude: position.coords.longitude});
-            });
+        try {
+            if (isSecureContext) {
+                if ('geolocation' in navigator) {
+                    navigator.geolocation.getCurrentPosition((position) => {
+                        setCenterMapDisabled(false);
+                        setUserPosition({latitude: position.coords.latitude, longitude: position.coords.longitude});
+                    });
+                } else {
+                    console.info('Geolocation permission not given or feature not available.');
+                }
+            } else {
+                console.info('Geolocation is only available in a secure context');
+            }
+        } catch {
+            console.debug('Could not get geolocation. Are you using a somewhat modern browser?');
         }
     }, []);
 
@@ -246,6 +259,16 @@ export const ButterflyMap = (props) => {
     };
 
     return <ThemeProvider theme={theme}>
+        <ControlBar
+            options={typeOptions}
+            setOptions={setTypeOptions}
+            showClosedRightNow={showClosedRightNow}
+            showAllTypes={showAllTypes}
+            handleOptionClick={handleTypeOptionClick}
+            handleShowAllClick={handleShowAllTypesClick}
+            handleShowClosedRightNowClick={handleShowClosedRightNowClick}
+            localStrings={props.localStrings}
+        />
         <ReactMapGL {...viewport} onViewportChange={(newViewport) => setViewport(newViewport)}
                     mapStyle={props.tileServer}>
             <Markers doMapMove={doMapMove} displayPointTypes={displayPointTypes}/>
@@ -265,14 +288,7 @@ export const ButterflyMap = (props) => {
         <PointBar pointTypes={displayPointTypes}
                   position={position}
                   moveMapPosition={moveMapPosition}
-                  typeOptions={typeOptions}
-                  setTypeOptions={setTypeOptions}
-                  showAllTypes={showAllTypes}
-                  showClosedRightNow={showClosedRightNow}
                   userPosition={userPosition}
-                  handleTypeOptionClick={handleTypeOptionClick}
-                  handleShowAllTypesClick={handleShowAllTypesClick}
-                  handleShowClosedRightNowClick={handleShowClosedRightNowClick}
                   localStrings={props.localStrings}
         />}
     </ThemeProvider>;
@@ -319,5 +335,7 @@ ButterflyMap.propTypes = {
         buttonFontColor: PropTypes.string,
         disabledButtonBackground: PropTypes.string,
         disabledButtonFontColor: PropTypes.string,
+        popupBackgroundColor: PropTypes.string,
+        highlightOptionColor: PropTypes.string,
     }),
 };

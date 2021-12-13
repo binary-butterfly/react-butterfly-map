@@ -2,22 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 import {localStringsPropTypes} from '../data/propTypes';
-import ControlCard from './ControlCard';
 import PointCard from './PointCard';
 
 const CardContainer = styled.div`
   display: flex;
   width: 100%;
   flex-wrap: nowrap;
-
-  @media(max-width: 700px) {
-    flex-direction: column;
-  }
-`;
-
-const PointContainer = styled.div`
-  display: flex;
-  width: 100%;
   overflow-x: auto;
 `;
 
@@ -46,16 +36,6 @@ const PointBar = (props) => {
     }, [pointTypes, position]);
 
     return <CardContainer>
-            <ControlCard options={props.typeOptions}
-                         setOptions={props.setTypeOptions}
-                         showClosedRightNow={props.showClosedRightNow}
-                         showAllTypes={props.showAllTypes}
-                         handleOptionClick={props.handleTypeOptionClick}
-                         handleShowAllClick={props.handleShowAllTypesClick}
-                         handleShowClosedRightNowClick={props.handleShowClosedRightNowClick}
-                         localStrings={props.localStrings}
-            />
-        <PointContainer>
             {points.map((point, index) => <PointCard
                     point={point}
                     key={index}
@@ -65,18 +45,11 @@ const PointBar = (props) => {
                     localStrings={props.localStrings}
                 />,
             )}
-        </PointContainer>
     </CardContainer>;
 };
 
 PointBar.propTypes = {
     pointTypes: PropTypes.array.isRequired, // TODO: arrayOf shape
-    typeOptions: PropTypes.array.isRequired, // TODO: arrayOf shape
-    showClosedRightNow: PropTypes.bool.isRequired,
-    showAllTypes: PropTypes.bool.isRequired,
-    handleTypeOptionClick: PropTypes.func.isRequired,
-    handleShowAllTypesClick: PropTypes.func.isRequired,
-    handleShowClosedRightNowClick: PropTypes.func.isRequired,
     moveMapPosition: PropTypes.func.isRequired,
     position: PropTypes.shape({latitude: PropTypes.number, longitude: PropTypes.number}).isRequired,
     userPosition: PropTypes.shape({latitude: PropTypes.number, longitude: PropTypes.number}),

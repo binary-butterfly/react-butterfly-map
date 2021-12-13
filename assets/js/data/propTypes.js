@@ -23,6 +23,10 @@ export const localStringsPropTypes = {
     showAll: PropTypes.string.isRequired,
     closedRightNow: PropTypes.string.isRequired,
     website: PropTypes.string.isRequired,
+    search: PropTypes.string.isRequired,
+    all: PropTypes.string.isRequired,
+    some: PropTypes.string.isRequired,
+    none: PropTypes.string.isRequired,
 };
 
 export const dayPropTypes = PropTypes.oneOfType(
