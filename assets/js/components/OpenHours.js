@@ -117,7 +117,7 @@ const UntilSmall = styled(Small)`
 `;
 
 const UntilWarning = (props) => {
-    if (props.until) {
+    if (props.until && props.until instanceof Date) {
         return <UntilSmall>{props.localStrings?.closesOn ?? 'This point closes on'} {props.until.toLocaleDateString()}</UntilSmall>;
     }
     return <></>;

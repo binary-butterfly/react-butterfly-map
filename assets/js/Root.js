@@ -65,7 +65,7 @@ const Root = () => {
                             text: 'Cool example!',
                             additionalInfo: 'Weng 42, 5453 Weng, Österreich',
                             valid: {
-                                until: new Date(2100, 11, 31),
+                                until: '2100-12-31',
                             },
                             hours: {
                                 sunday: false,
