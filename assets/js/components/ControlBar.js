@@ -36,8 +36,6 @@ const BarLiWithPopup = styled(BarLi)`
   min-width: 15rem;
 
   a::after {
-    transition-duration: 0.5s;
-    display: inline-block;
     content: "⮟";
   }
 
@@ -56,7 +54,7 @@ const BarLiWithPopup = styled(BarLi)`
   }
 
   &:hover menu li, &focus menu li, &:focus-within menu li {
-    transition-duration: 0.5s;
+    transition-duration: ${props => props.theme.reduceMotion ? 0 : '0.5s'};
   }
 `;
 

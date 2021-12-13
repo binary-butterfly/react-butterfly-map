@@ -62,7 +62,7 @@ Markers.propTypes = {
 export const ButterflyMap = (props) => {
     const [position, setPosition] = React.useState(props.center);
 
-    const [reduceAnimation, setReduceAnimation] = React.useState(() => {
+    const [reduceMotion, setReduceMotion] = React.useState(() => {
         // Respect prefers-reduced-motion setting (and falls back to no animations on browsers that don't support this feature)
         const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
         return reducedQuery?.matches ?? false;
@@ -82,6 +82,7 @@ export const ButterflyMap = (props) => {
     });
 
     const theme = {
+        reduceMotion: reduceMotion,
         error: props.theme?.error ?? 'red',
         success: props.theme?.success ?? 'green',
         buttonBackground: props.theme?.buttonBackground ?? 'transparent',
@@ -214,7 +215,7 @@ export const ButterflyMap = (props) => {
     }, [props.center]);
 
     const doMapMove = (position) => {
-        const animation = reduceAnimation
+        const animation = reduceMotion
             ? {
                 transitionInterpolator: undefined,
                 transitionDuration: 0,
@@ -279,8 +280,8 @@ export const ButterflyMap = (props) => {
                 {props.localStrings?.centerMap ?? 'Center map on current location'}
             </Button>
             <AnimateLabel>
-                <AnimateCheckBox type="checkbox" checked={reduceAnimation}
-                                 onChange={e => setReduceAnimation(e.target.checked)}/>
+                <AnimateCheckBox type="checkbox" checked={reduceMotion}
+                                 onChange={e => setReduceMotion(e.target.checked)}/>
                 {props.localStrings?.reduceMotion ?? 'Reduce motion'}
             </AnimateLabel>
         </SubMapBar>
