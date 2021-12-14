@@ -53,7 +53,7 @@ const BarLiWithPopup = styled(BarLi)`
     display: block;
   }
 
-  &:hover menu li, &focus menu li, &:focus-within menu li {
+  &:hover menu li, &:focus menu li, &:focus-within menu li {
     transition-duration: ${props => props.theme.reduceMotion ? 0 : '0.5s'};
   }
 `;

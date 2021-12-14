@@ -21,12 +21,17 @@ export const localStringsPropTypes = {
     reduceMotion: PropTypes.string.isRequired,
     show: PropTypes.string.isRequired,
     showAll: PropTypes.string.isRequired,
+    showing: PropTypes.string.isRequired,
     closedRightNow: PropTypes.string.isRequired,
     website: PropTypes.string.isRequired,
     search: PropTypes.string.isRequired,
     all: PropTypes.string.isRequired,
     some: PropTypes.string.isRequired,
     none: PropTypes.string.isRequired,
+    of: PropTypes.string.isRequired,
+    entriesPerPage: PropTypes.string.isRequired,
+    nextPage: PropTypes.string.isRequired,
+    previousPage: PropTypes.string.isRequired,
 };
 
 export const dayPropTypes = PropTypes.oneOfType(

@@ -73,6 +73,7 @@ export const ButterflyMap = (props) => {
     const [displayPointTypes, setDisplayPointTypes] = React.useState([]);
     const [userPosition, setUserPosition] = React.useState(null);
     const [centerMapDisabled, setCenterMapDisabled] = React.useState(true);
+    const [paginationPage, setPaginationPage] = React.useState(1);
 
     const [viewport, setViewport] = React.useState({
         ...props.center,
@@ -86,6 +87,7 @@ export const ButterflyMap = (props) => {
         error: props.theme?.error ?? 'red',
         success: props.theme?.success ?? 'green',
         buttonBackground: props.theme?.buttonBackground ?? 'transparent',
+        buttonActiveBackground: props.theme?.buttonActiveBackground ?? '#ff00ff57',
         buttonFontColor: props.theme?.buttonFontColor ?? 'initial',
         disabledButtonBackground: props.theme?.disabledButtonBackground ?? 'lightgray',
         disabledButtonFontColor: props.theme?.disabledButtonFontColor ?? 'white',
@@ -226,6 +228,7 @@ export const ButterflyMap = (props) => {
             };
         setViewport({...viewport, ...position, ...animation});
         setPosition(position);
+        setPaginationPage(1);
     };
 
     const moveMapPosition = (e, markerPosition) => {
@@ -305,6 +308,8 @@ export const ButterflyMap = (props) => {
                   moveMapPosition={moveMapPosition}
                   userPosition={userPosition}
                   localStrings={props.localStrings}
+                  page={paginationPage}
+                  setPage={setPaginationPage}
         />}
     </ThemeProvider>;
 };
@@ -347,6 +352,7 @@ ButterflyMap.propTypes = {
         error: PropTypes.string,
         success: PropTypes.string,
         buttonBackground: PropTypes.string,
+        buttonActiveBackground: PropTypes.string,
         buttonFontColor: PropTypes.string,
         disabledButtonBackground: PropTypes.string,
         disabledButtonFontColor: PropTypes.string,
