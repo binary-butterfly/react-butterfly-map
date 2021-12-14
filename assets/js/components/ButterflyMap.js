@@ -234,13 +234,16 @@ export const ButterflyMap = (props) => {
         doMapMove(markerPosition);
     };
 
-    React.useEffect(() => {
+    const getUserPosition = (move = false) => {
         try {
             if (isSecureContext) {
                 if ('geolocation' in navigator) {
                     navigator.geolocation.getCurrentPosition((position) => {
                         setCenterMapDisabled(false);
                         setUserPosition({latitude: position.coords.latitude, longitude: position.coords.longitude});
+                        if (move) {
+                            doMapMove({latitude: position.coords.latitude, longitude: position.coords.longitude});
+                        }
                     });
                 } else {
                     console.info('Geolocation permission not given or feature not available.');
@@ -251,12 +254,14 @@ export const ButterflyMap = (props) => {
         } catch {
             console.debug('Could not get geolocation. Are you using a somewhat modern browser?');
         }
+    }
+
+    React.useEffect(() => {
+        getUserPosition(false);
     }, []);
 
     const handleCenterMapClick = () => {
-        if (userPosition) {
-            doMapMove(userPosition);
-        }
+        getUserPosition(true)
     };
 
     return <ThemeProvider theme={theme}>
