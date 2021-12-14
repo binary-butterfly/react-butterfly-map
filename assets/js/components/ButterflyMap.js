@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Button from './Button';
+import ControlBar from './ControlBar';
 import PointBar from './PointBar';
 import styled, {ThemeProvider} from 'styled-components';
 import ReactMapGL, {AttributionControl, FlyToInterpolator, Marker} from 'react-map-gl';
 import {localStringsPropTypes, dayPropTypes, hoursPropTypes} from '../data/propTypes';
 import {filterHours} from '../data/helpers';
 
-import ownCss from '../../css/ButterflyMap.css' // NOT unused.
+import ownCss from '../../css/ButterflyMap.css'; // NOT unused.
 import css from 'maplibre-gl/dist/maplibre-gl.css'; // NOT unused either.
 
 const SubMapBar = styled.div`
@@ -61,10 +62,10 @@ Markers.propTypes = {
 export const ButterflyMap = (props) => {
     const [position, setPosition] = React.useState(props.center);
 
-    const [reduceAnimation, setReduceAnimation] = React.useState(() => {
+    const [reduceMotion, setReduceMotion] = React.useState(() => {
         // Respect prefers-reduced-motion setting (and falls back to no animations on browsers that don't support this feature)
         const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-        return reducedQuery?.matches ?? false;
+        return reducedQuery?.matches ?? true;
     });
     const [typeOptions, setTypeOptions] = React.useState([]);
     const [showAllTypes, setShowAllTypes] = React.useState(true);
@@ -72,6 +73,7 @@ export const ButterflyMap = (props) => {
     const [displayPointTypes, setDisplayPointTypes] = React.useState([]);
     const [userPosition, setUserPosition] = React.useState(null);
     const [centerMapDisabled, setCenterMapDisabled] = React.useState(true);
+    const [paginationPage, setPaginationPage] = React.useState(1);
 
     const [viewport, setViewport] = React.useState({
         ...props.center,
@@ -81,12 +83,16 @@ export const ButterflyMap = (props) => {
     });
 
     const theme = {
+        reduceMotion: reduceMotion,
         error: props.theme?.error ?? 'red',
         success: props.theme?.success ?? 'green',
         buttonBackground: props.theme?.buttonBackground ?? 'transparent',
+        buttonActiveBackground: props.theme?.buttonActiveBackground ?? '#ff00ff57',
         buttonFontColor: props.theme?.buttonFontColor ?? 'initial',
         disabledButtonBackground: props.theme?.disabledButtonBackground ?? 'lightgray',
         disabledButtonFontColor: props.theme?.disabledButtonFontColor ?? 'white',
+        popupBackgroundColor: props.theme?.popupBackgroundColor ?? 'white',
+        highlightOptionColor: props.theme?.highlightOptionColor ?? 'lightgray',
     };
 
     const updateDisplayPointTypes = (proposedTypes, updateTypeOptions = false, showClosed = showClosedRightNow) => {
@@ -211,7 +217,7 @@ export const ButterflyMap = (props) => {
     }, [props.center]);
 
     const doMapMove = (position) => {
-        const animation = reduceAnimation
+        const animation = reduceMotion
             ? {
                 transitionInterpolator: undefined,
                 transitionDuration: 0,
@@ -222,6 +228,7 @@ export const ButterflyMap = (props) => {
             };
         setViewport({...viewport, ...position, ...animation});
         setPosition(position);
+        setPaginationPage(1);
     };
 
     const moveMapPosition = (e, markerPosition) => {
@@ -231,21 +238,57 @@ export const ButterflyMap = (props) => {
     };
 
     React.useEffect(() => {
-        if ('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                setCenterMapDisabled(false);
-                setUserPosition({latitude: position.coords.latitude, longitude: position.coords.longitude});
-            });
+        const updateUserPosition = () => {
+            try {
+                if (isSecureContext) {
+                    if ('geolocation' in navigator) {
+                        navigator.geolocation.getCurrentPosition((position) => {
+                            setCenterMapDisabled(false);
+                            setUserPosition({latitude: position.coords.latitude, longitude: position.coords.longitude});
+                        });
+                        return true;
+                    } else {
+                        console.info('Geolocation permission not given or feature not available.');
+                    }
+                } else {
+                    console.info('Geolocation is only available in a secure context');
+                }
+            } catch {
+                console.debug('Could not get geolocation. Are you using a somewhat modern browser?');
+            }
+        };
+
+        let updateUserPositionInterval = false;
+        if (updateUserPosition()) {
+            updateUserPositionInterval = window.setInterval(updateUserPosition, 30000);
         }
+
+        return () => {
+            if (updateUserPositionInterval) {
+                clearInterval(updateUserPositionInterval);
+            }
+        };
     }, []);
 
     const handleCenterMapClick = () => {
         if (userPosition) {
-            doMapMove(userPosition);
+            doMapMove(userPosition, false);
         }
     };
 
     return <ThemeProvider theme={theme}>
+        <ControlBar
+            options={typeOptions}
+            setOptions={setTypeOptions}
+            showClosedRightNow={showClosedRightNow}
+            showAllTypes={showAllTypes}
+            handleOptionClick={handleTypeOptionClick}
+            handleShowAllClick={handleShowAllTypesClick}
+            handleShowClosedRightNowClick={handleShowClosedRightNowClick}
+            localStrings={props.localStrings}
+            searchBackend={props.searchBackend}
+            doMapMove={doMapMove}
+        />
         <ReactMapGL {...viewport} onViewportChange={(newViewport) => setViewport(newViewport)}
                     mapStyle={props.tileServer}>
             <Markers doMapMove={doMapMove} displayPointTypes={displayPointTypes}/>
@@ -256,8 +299,8 @@ export const ButterflyMap = (props) => {
                 {props.localStrings?.centerMap ?? 'Center map on current location'}
             </Button>
             <AnimateLabel>
-                <AnimateCheckBox type="checkbox" checked={reduceAnimation}
-                                 onChange={e => setReduceAnimation(e.target.checked)}/>
+                <AnimateCheckBox type="checkbox" checked={reduceMotion}
+                                 onChange={e => setReduceMotion(e.target.checked)}/>
                 {props.localStrings?.reduceMotion ?? 'Reduce motion'}
             </AnimateLabel>
         </SubMapBar>
@@ -265,15 +308,10 @@ export const ButterflyMap = (props) => {
         <PointBar pointTypes={displayPointTypes}
                   position={position}
                   moveMapPosition={moveMapPosition}
-                  typeOptions={typeOptions}
-                  setTypeOptions={setTypeOptions}
-                  showAllTypes={showAllTypes}
-                  showClosedRightNow={showClosedRightNow}
                   userPosition={userPosition}
-                  handleTypeOptionClick={handleTypeOptionClick}
-                  handleShowAllTypesClick={handleShowAllTypesClick}
-                  handleShowClosedRightNowClick={handleShowClosedRightNowClick}
                   localStrings={props.localStrings}
+                  page={paginationPage}
+                  setPage={setPaginationPage}
         />}
     </ThemeProvider>;
 };
@@ -312,12 +350,16 @@ ButterflyMap.propTypes = {
     tileServer: PropTypes.string.isRequired,
     zoom: PropTypes.number,
     localStrings: PropTypes.shape(localStringsPropTypes),
+    searchBackend: PropTypes.string,
     theme: PropTypes.shape({
         error: PropTypes.string,
         success: PropTypes.string,
         buttonBackground: PropTypes.string,
+        buttonActiveBackground: PropTypes.string,
         buttonFontColor: PropTypes.string,
         disabledButtonBackground: PropTypes.string,
         disabledButtonFontColor: PropTypes.string,
+        popupBackgroundColor: PropTypes.string,
+        highlightOptionColor: PropTypes.string,
     }),
 };

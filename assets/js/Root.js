@@ -16,9 +16,10 @@ const Root = () => {
 
     return <Main>
         <ButterflyMap
-            tileServer={'https://tiles.binary-butterfly.de/osm-bright-gl-style/style.json'}
+            tileServer="https://tiles.binary-butterfly.de/osm-bright-gl-style/style.json"
             center={{latitude: 47.79, longitude: 13.0550}}
             height={500}
+            searchBackend="testing"
             pointTypes={[
                 {
                     name: 'Example 1',

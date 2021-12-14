@@ -2,28 +2,28 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 import {localStringsPropTypes} from '../data/propTypes';
-import ControlCard from './ControlCard';
+import Pagination from './Pagination';
 import PointCard from './PointCard';
 
 const CardContainer = styled.div`
   display: flex;
   width: 100%;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 
-  @media(max-width: 700px) {
-    flex-direction: column;
+  @media (max-width: 1000px) {
+    justify-content: space-around;
   }
-`;
-
-const PointContainer = styled.div`
-  display: flex;
-  width: 100%;
-  overflow-x: auto;
 `;
 
 const PointBar = (props) => {
     const [points, setPoints] = React.useState([]);
-    const {pointTypes, moveMapPosition, position} = props;
+    const [entriesPerPage, _setEntriesPerPage] = React.useState(window.innerWidth < 1000 ? 2 : 5);
+    const {pointTypes, moveMapPosition, position, page, setPage} = props;
+
+    const setEntriesPerPage = (newEntriesPerPage) => {
+        _setEntriesPerPage(newEntriesPerPage);
+        setPage(1);
+    }
 
     const handleSidebarMarkerClick = (e, point) => {
         moveMapPosition(e, point.position);
@@ -40,45 +40,48 @@ const PointBar = (props) => {
                 newPoints.push({...point, type: pointType.name, index: index});
             });
         });
+
+        if (newPoints.length !== points.length) {
+            setPage(1);
+        }
+
         setPoints(newPoints.sort((a, b) => {
             return calculateDistance(a.position) - calculateDistance(b.position);
         }));
     }, [pointTypes, position]);
 
-    return <CardContainer>
-            <ControlCard options={props.typeOptions}
-                         setOptions={props.setTypeOptions}
-                         showClosedRightNow={props.showClosedRightNow}
-                         showAllTypes={props.showAllTypes}
-                         handleOptionClick={props.handleTypeOptionClick}
-                         handleShowAllClick={props.handleShowAllTypesClick}
-                         handleShowClosedRightNowClick={props.handleShowClosedRightNowClick}
-                         localStrings={props.localStrings}
-            />
-        <PointContainer>
-            {points.map((point, index) => <PointCard
+    let paginatedPoints = [];
+    for (let c = 0; c < entriesPerPage; c++) {
+        const point = points[entriesPerPage * (page - 1) + c];
+        if (point === undefined) {
+            break;
+        }
+        paginatedPoints.push(point);
+    }
+
+    return <>
+        <CardContainer>
+            {paginatedPoints.map((point, index) => <PointCard
                     point={point}
                     key={index}
-                    selected={index === 0}
+                    selected={page === 1 && index === 0}
                     handleSidebarMarkerClick={handleSidebarMarkerClick}
                     userPosition={props.userPosition}
                     localStrings={props.localStrings}
                 />,
             )}
-        </PointContainer>
-    </CardContainer>;
+        </CardContainer>
+        <Pagination page={page} setPage={setPage} entriesPerPage={entriesPerPage} setEntriesPerPage={setEntriesPerPage}
+                    entryCount={points.length}/>
+    </>;
 };
 
 PointBar.propTypes = {
     pointTypes: PropTypes.array.isRequired, // TODO: arrayOf shape
-    typeOptions: PropTypes.array.isRequired, // TODO: arrayOf shape
-    showClosedRightNow: PropTypes.bool.isRequired,
-    showAllTypes: PropTypes.bool.isRequired,
-    handleTypeOptionClick: PropTypes.func.isRequired,
-    handleShowAllTypesClick: PropTypes.func.isRequired,
-    handleShowClosedRightNowClick: PropTypes.func.isRequired,
     moveMapPosition: PropTypes.func.isRequired,
     position: PropTypes.shape({latitude: PropTypes.number, longitude: PropTypes.number}).isRequired,
+    page: PropTypes.number.isRequired,
+    setPage: PropTypes.func.isRequired,
     userPosition: PropTypes.shape({latitude: PropTypes.number, longitude: PropTypes.number}),
     localStrings: PropTypes.shape(localStringsPropTypes),
 };
