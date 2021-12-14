@@ -1,6 +1,6 @@
 {
   "name": "react-butterfly-map",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "license": "MIT",
   "private": false,
   "main": "dist/react-butterfly-map.min.js",

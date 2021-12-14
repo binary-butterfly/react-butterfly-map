@@ -71,8 +71,13 @@ const PointBar = (props) => {
                 />,
             )}
         </CardContainer>
-        <Pagination page={page} setPage={setPage} entriesPerPage={entriesPerPage} setEntriesPerPage={setEntriesPerPage}
-                    entryCount={points.length}/>
+        <Pagination page={page}
+                    setPage={setPage}
+                    entriesPerPage={entriesPerPage}
+                    setEntriesPerPage={setEntriesPerPage}
+                    entryCount={points.length}
+                    localStrings={props.localStrings}
+        />
     </>;
 };
 
