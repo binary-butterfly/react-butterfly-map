@@ -65,7 +65,7 @@ export const ButterflyMap = (props) => {
     const [reduceMotion, setReduceMotion] = React.useState(() => {
         // Respect prefers-reduced-motion setting (and falls back to no animations on browsers that don't support this feature)
         const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-        return reducedQuery?.matches ?? false;
+        return reducedQuery?.matches ?? true;
     });
     const [typeOptions, setTypeOptions] = React.useState([]);
     const [showAllTypes, setShowAllTypes] = React.useState(true);
