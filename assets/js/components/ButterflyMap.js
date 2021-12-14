@@ -234,34 +234,43 @@ export const ButterflyMap = (props) => {
         doMapMove(markerPosition);
     };
 
-    const getUserPosition = (move = false) => {
-        try {
-            if (isSecureContext) {
-                if ('geolocation' in navigator) {
-                    navigator.geolocation.getCurrentPosition((position) => {
-                        setCenterMapDisabled(false);
-                        setUserPosition({latitude: position.coords.latitude, longitude: position.coords.longitude});
-                        if (move) {
-                            doMapMove({latitude: position.coords.latitude, longitude: position.coords.longitude});
-                        }
-                    });
-                } else {
-                    console.info('Geolocation permission not given or feature not available.');
-                }
-            } else {
-                console.info('Geolocation is only available in a secure context');
-            }
-        } catch {
-            console.debug('Could not get geolocation. Are you using a somewhat modern browser?');
-        }
-    }
-
     React.useEffect(() => {
-        getUserPosition(false);
+        const updateUserPosition = () => {
+            try {
+                if (isSecureContext) {
+                    if ('geolocation' in navigator) {
+                        navigator.geolocation.getCurrentPosition((position) => {
+                            setCenterMapDisabled(false);
+                            setUserPosition({latitude: position.coords.latitude, longitude: position.coords.longitude});
+                        });
+                        return true;
+                    } else {
+                        console.info('Geolocation permission not given or feature not available.');
+                    }
+                } else {
+                    console.info('Geolocation is only available in a secure context');
+                }
+            } catch {
+                console.debug('Could not get geolocation. Are you using a somewhat modern browser?');
+            }
+        };
+
+        let updateUserPositionInterval = false;
+        if (updateUserPosition()) {
+            updateUserPositionInterval = window.setInterval(updateUserPosition, 30000);
+        }
+
+        return () => {
+            if (updateUserPositionInterval) {
+                clearInterval(updateUserPositionInterval);
+            }
+        };
     }, []);
 
     const handleCenterMapClick = () => {
-        getUserPosition(true)
+        if (userPosition) {
+            doMapMove(userPosition, false);
+        }
     };
 
     return <ThemeProvider theme={theme}>
