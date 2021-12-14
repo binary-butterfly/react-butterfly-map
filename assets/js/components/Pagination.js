@@ -21,6 +21,7 @@ const PaginationMeta = styled.span`
   flex-wrap: wrap;
   width: 100%;
   margin-top: 0.25rem;
+  font-size: 1rem;
 
   div {
     display: flex;
@@ -37,6 +38,7 @@ const PaginationMeta = styled.span`
       border-radius: 0.25rem;
       margin-right: 0.5rem;
       cursor: pointer;
+      padding: 0.25rem;
     }
 
     span {
