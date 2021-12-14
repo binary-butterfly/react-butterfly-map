@@ -20,7 +20,7 @@ const BarLi = styled.li`
 
 const BarLiWithPopup = styled(BarLi)`
   cursor: pointer;
-  min-width: 15rem;
+  min-width: ${props => props.theme.typePopupMinWidth};
 
   a[data-caret="true"]::after {
     content: "⮟";
@@ -96,8 +96,10 @@ const SearchLi = (props) => {
 
     const makeErrorVisible = () => {
         setResults([]);
-        setErrorMsg(<li><ShowAnchor
-            href="#">{localStrings?.searchError ?? 'An error occurred during searching. Please try again later'}</ShowAnchor></li>);
+        setErrorMsg(<li>
+            <ShowAnchor href="#" onClick={(e) => e.preventDefault()}>
+                {localStrings?.searchError ?? 'An error occurred during searching. Please try again later'}</ShowAnchor>
+        </li>);
     };
 
     const handleChange = (e) => {
@@ -168,7 +170,7 @@ const ShowTypesText = React.memo((props) => {
     const {options, localStrings, showAllTypes} = props;
     const selectedTypes = showAllTypes ? 100 : options.filter((option) => option.showing);
 
-    return <ShowAnchor data-caret="true" href="#">
+    return <ShowAnchor data-caret="true" href="#" onClick={(e) => e.preventDefault()}>
         {localStrings?.show ?? 'Show'}:
         {showAllTypes
             ? localStrings?.all ?? ' All'

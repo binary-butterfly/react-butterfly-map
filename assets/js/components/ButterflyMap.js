@@ -93,6 +93,7 @@ export const ButterflyMap = (props) => {
         disabledButtonFontColor: props.theme?.disabledButtonFontColor ?? 'white',
         popupBackgroundColor: props.theme?.popupBackgroundColor ?? 'white',
         highlightOptionColor: props.theme?.highlightOptionColor ?? 'lightgray',
+        typePopupMinWidth: props.theme?.typePopupMinWidth ?? '15rem',
     };
 
     const updateDisplayPointTypes = (proposedTypes, updateTypeOptions = false, showClosed = showClosedRightNow) => {
@@ -361,5 +362,6 @@ ButterflyMap.propTypes = {
         disabledButtonFontColor: PropTypes.string,
         popupBackgroundColor: PropTypes.string,
         highlightOptionColor: PropTypes.string,
+        typePopupMinWidth: PropTypes.string,
     }),
 };
