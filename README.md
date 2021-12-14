@@ -47,6 +47,17 @@ or that new features might not always be entirely documented.
             />
    ```
 
+### Searching
+
+There is some (currently untested) search functionality available.  
+To use this, you must set up a server that responds to a JSON call containing the key `searchString` with an array
+of position objects containing the keys `text`, `latitude` and `longitude`.
+
+Once you've done that, simply set the `searchBackend` param of `<ButterflyMap/>` to the URL of your backend.
+
+This feature is still in early development and the API may change.  
+Due to the cost associated with Geocoding, there is no search backend available for testing at this time.
+
 ## Development
 
 This repository contains an example page that contains the component, so getting 

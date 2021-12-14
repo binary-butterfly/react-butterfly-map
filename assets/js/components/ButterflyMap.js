@@ -286,6 +286,8 @@ export const ButterflyMap = (props) => {
             handleShowAllClick={handleShowAllTypesClick}
             handleShowClosedRightNowClick={handleShowClosedRightNowClick}
             localStrings={props.localStrings}
+            searchBackend={props.searchBackend}
+            doMapMove={doMapMove}
         />
         <ReactMapGL {...viewport} onViewportChange={(newViewport) => setViewport(newViewport)}
                     mapStyle={props.tileServer}>
@@ -348,6 +350,7 @@ ButterflyMap.propTypes = {
     tileServer: PropTypes.string.isRequired,
     zoom: PropTypes.number,
     localStrings: PropTypes.shape(localStringsPropTypes),
+    searchBackend: PropTypes.string,
     theme: PropTypes.shape({
         error: PropTypes.string,
         success: PropTypes.string,

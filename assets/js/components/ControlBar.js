@@ -18,28 +18,15 @@ const BarLi = styled.li`
   margin: auto 0.5rem auto 0.5rem;
 `;
 
-const SearchInput = styled.input`
-  margin: auto 0 auto 0.25rem;
-  font-size: 1.25rem;
-`;
-
-const SearchLi = (props) => {
-    const {localStrings} = props;
-    return <BarLi>
-        <label htmlFor="react-butterfly-map-point-search">{localStrings?.search ?? 'Search'}:</label>
-        <SearchInput type="text" id="react-butterfly-map-point-search"/>
-    </BarLi>;
-};
-
 const BarLiWithPopup = styled(BarLi)`
   cursor: pointer;
   min-width: 15rem;
 
-  a::after {
+  a[data-caret="true"]::after {
     content: "⮟";
   }
 
-  &:hover a::after, &:focus-within a::after {
+  &:hover a[data-caret="true"]::after, &:focus-within a[data-caret="true"]::after {
     content: "⮝"
   }
 
@@ -47,7 +34,7 @@ const BarLiWithPopup = styled(BarLi)`
     visibility: hidden;
   }
 
-  &:hover menu, &:focus menu, &:focus-within menu {
+  &:hover menu:not(:empty), &:focus menu:not(:empty), &:focus-within menu:not(:empty) {
     cursor: pointer;
     visibility: visible;
     display: block;
@@ -83,10 +70,6 @@ const ShowMenu = styled.menu`
   }
 `;
 
-const ControlCheck = styled.input`
-  margin-right: 0.5rem;
-`;
-
 const ShowAnchor = styled.a`
   text-decoration: none;
   color: inherit;
@@ -96,11 +79,96 @@ const ShowAnchor = styled.a`
   }
 `;
 
+const SearchInput = styled.input`
+  margin: auto 0 auto 0.25rem;
+  font-size: 1.25rem;
+`;
+
+const SearchLi = (props) => {
+    const {searchBackend, localStrings, doMapMove} = props;
+    if (!searchBackend) {
+        return <></>;
+    }
+
+    const [searchString, setSearchString] = React.useState('');
+    const [results, setResults] = React.useState([]);
+    const [errorMsg, setErrorMsg] = React.useState('');
+
+    const makeErrorVisible = () => {
+        setResults([]);
+        setErrorMsg(<li><ShowAnchor
+            href="#">{localStrings?.searchError ?? 'An error occurred during searching. Please try again later'}</ShowAnchor></li>);
+    };
+
+    const handleChange = (e) => {
+        setSearchString(e.target.value);
+
+        if (searchString.length > 2) {
+            if (searchBackend === 'testing') {
+                setResults([
+                    {text: 'Searching is disabled during testing', latitude: 47.79, longitude: 13.0550},
+                ]);
+            } else {
+                fetch(searchBackend, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        searchString: searchString,
+                    }),
+                }).then(result => {
+                    if (result.ok) {
+                        result.json().then(json => {
+                            setResults(json);
+                        });
+                    } else {
+                        makeErrorVisible();
+                    }
+                }).catch(() => {
+                    makeErrorVisible();
+                });
+            }
+        } else {
+            setResults([]);
+        }
+    };
+
+    const handleResultClick = (e, lat, long) => {
+        e.preventDefault();
+        doMapMove({latitude: lat, longitude: long})
+        setSearchString('');
+        setResults([])
+    };
+
+    return <BarLiWithPopup>
+        <label htmlFor="react-butterfly-map-point-search">{localStrings?.search ?? 'Search'}:</label>
+        <SearchInput value={searchString} onChange={handleChange} type="text" id="react-butterfly-map-point-search"/>
+        <ShowMenu>{results.length > 0 && results.map((result, index) => {
+            return <li key={index}>
+                <ShowAnchor href="#" onClick={(e) => handleResultClick(e, result.latitude, result.longitude)}>
+                    {result.text}
+                </ShowAnchor>
+            </li>;
+        }) || errorMsg}</ShowMenu>
+    </BarLiWithPopup>;
+};
+
+SearchLi.propTypes = {
+    doMapMove: PropTypes.func.isRequired,
+    localStrings: PropTypes.shape(localStringsPropTypes),
+    searchBackend: PropTypes.string,
+};
+
+const ControlCheck = styled.input`
+  margin-right: 0.5rem;
+`;
+
 const ShowTypesText = React.memo((props) => {
     const {options, localStrings, showAllTypes} = props;
     const selectedTypes = showAllTypes ? 100 : options.filter((option) => option.showing);
 
-    return <ShowAnchor href="#">
+    return <ShowAnchor data-caret="true" href="#">
         {localStrings?.show ?? 'Show'}:
         {showAllTypes
             ? localStrings?.all ?? ' All'
@@ -128,10 +196,12 @@ const ControlBar = (props) => {
         handleShowClosedRightNowClick,
         showClosedRightNow,
         localStrings,
+        searchBackend,
+        doMapMove,
     } = props;
 
     return <BarContainer>
-        {/*<SearchLi localStrings={localStrings}/>*/}
+        <SearchLi localStrings={localStrings} searchBackend={searchBackend} doMapMove={doMapMove}/>
         <BarLiWithPopup aria-haspopup={true}>
             <ShowTypesText options={options} localStrings={localStrings} showAllTypes={showAllTypes}/>
             <ShowMenu aria-label="submenu">
@@ -176,7 +246,9 @@ ControlBar.propTypes = {
     handleShowClosedRightNowClick: PropTypes.func.isRequired,
     showClosedRightNow: PropTypes.bool.isRequired,
     showAllTypes: PropTypes.bool.isRequired,
+    doMapMove: PropTypes.func.isRequired,
     localStrings: PropTypes.shape(localStringsPropTypes),
+    searchBackend: PropTypes.string,
 };
 
 export default ControlBar;

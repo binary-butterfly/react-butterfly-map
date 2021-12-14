@@ -32,6 +32,7 @@ export const localStringsPropTypes = {
     entriesPerPage: PropTypes.string.isRequired,
     nextPage: PropTypes.string.isRequired,
     previousPage: PropTypes.string.isRequired,
+    searchError: PropTypes.string,
 };
 
 export const dayPropTypes = PropTypes.oneOfType(
