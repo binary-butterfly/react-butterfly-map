@@ -15,6 +15,10 @@ const PointerBox = styled.div`
   cursor: pointer;
 `;
 
+const CenterMapButton = styled(Button)`
+  margin: 0.5rem 0 0.5rem 0;
+`;
+
 const Markers = React.memo((props) => {
     // Use memo to avoid needless re-renders of the markers
     const {displayPointTypes, doMapMove} = props;
@@ -29,7 +33,7 @@ const Markers = React.memo((props) => {
                 >
                     <PointerBox>
                         {!!point.icon &&
-                        <point.icon data-banana='fooo' style={{height: '50px', width: '50px'}}/>
+                        <point.icon data-banana="fooo" style={{height: '50px', width: '50px'}}/>
                         || <pointType.icon style={{height: '50px', width: '50px'}}/>}
                     </PointerBox>
                 </Marker>);
@@ -277,16 +281,17 @@ export const ButterflyMap = (props) => {
             setReduceMotion={setReduceMotion}
             hideMap={hideMap}
             setHideMap={setHideMap}
-            centerMap={handleCenterMapClick}
         />
-        {!hideMap &&
-        <ReactMapGL {...viewport}
-                    onViewportChange={(newViewport) => setViewport(newViewport)}
-                    mapStyle={props.tileServer}>
-            <Markers doMapMove={doMapMove} displayPointTypes={displayPointTypes}/>
-            <AttributionControl compact={true}/>
-        </ReactMapGL>
-        }
+        {!hideMap && <>
+            <ReactMapGL {...viewport}
+                        onViewportChange={(newViewport) => setViewport(newViewport)}
+                        mapStyle={props.tileServer}>
+                <Markers doMapMove={doMapMove} displayPointTypes={displayPointTypes}/>
+                <AttributionControl compact={true}/>
+            </ReactMapGL>
+            <CenterMapButton
+                onClick={handleCenterMapClick}>{props.localStrings?.centerMap ?? 'Center map on current location'}</CenterMapButton>
+        </>}
         {typeOptions.length > 0 &&
         <PointBar pointTypes={displayPointTypes}
                   position={position}
