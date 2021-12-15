@@ -5,6 +5,7 @@ import {ButterflyMap} from './components/ButterflyMap';
 import ExampleCombinationMarker from '../img/exampleCombinationMarker.svg';
 import ExampleMarker1 from '../img/exampleMarker1.svg';
 import ExampleMarker2 from '../img/exampleMarker2.svg';
+import SpecialExampleMarker from '../img/specialExampleMarker.svg';
 
 const Main = styled.div`
   box-sizing: border-box;
@@ -44,6 +45,7 @@ const Root = () => {
                             position: {latitude: 47.075211, longitude: 13.834638},
                             text: 'This is another example',
                             additionalInfo: 'Ramingstein 223, 5591, Österreich',
+                            icon: SpecialExampleMarker,
                             hours: {
                                 sunday: false,
                                 monday: true,
