@@ -11,6 +11,10 @@ const PageButton = styled.button`
   padding: 0.2rem 0.5rem 0.2rem 0.5rem;
   cursor: pointer;
 
+  &:hover:not(:disabled) &:focus:not(:disabled) {
+    background-color: ${props => props.theme.buttonActiveBackground};
+  }
+  
   &:disabled {
     cursor: default;
   }

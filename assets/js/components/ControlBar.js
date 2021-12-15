@@ -48,6 +48,7 @@ const BarLiWithPopup = styled(BarLi)`
 const ShowMenu = styled.menu`
   position: absolute;
   background-color: ${props => props.theme.popupBackgroundColor};
+  margin: 0;
   z-index: 1000;
   padding: 0.25rem 0 0.25rem 0;
   list-style: none;
