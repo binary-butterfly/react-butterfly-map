@@ -37,7 +37,8 @@ const SecondBarUl = styled(BarUl)`
   label {
     cursor: pointer;
     margin: auto 0 auto 0;
-
+    line-height: initial;
+    
     input {
       margin: auto 0.25rem auto 0;
       vertical-align: middle;
