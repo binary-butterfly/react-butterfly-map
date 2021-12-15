@@ -18,10 +18,20 @@ const BarUl = styled.ul`
   margin: 0;
   padding: 0.25rem 0 0.25rem 0;
   display: flex;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   width: 50%;
   flex-wrap: wrap;
   align-content: end;
+  
+  /* Make sure font sizes aren't overwritten */
+  li {
+    a {
+      font-size: 1.25rem;
+    }
+    label {
+      font-size: 1.25rem;
+    }
+  }
 
   @media (max-width: 1300px) {
     width: 100%;
