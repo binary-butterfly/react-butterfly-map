@@ -8,8 +8,9 @@ const PageButton = styled.button`
   transition: ${props => props.theme.reduceMotion ? '' : '0.5s'};
   border-radius: 0.25rem;
   margin: 0.1rem;
-  padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+  padding: 0.3rem 0.6rem 0.3rem 0.6rem;
   cursor: pointer;
+  font-size: 1rem;
 
   &:hover:not(:disabled) &:focus:not(:disabled) {
     background-color: ${props => props.theme.buttonActiveBackground};
@@ -34,6 +35,7 @@ const PaginationMeta = styled.span`
     
     label {
       margin-top: auto;
+      margin-bottom: auto;
     }
 
     select {

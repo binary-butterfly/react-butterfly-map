@@ -2,14 +2,49 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 import {localStringsPropTypes} from '../data/propTypes';
+import Button from './Button';
 
-const BarContainer = styled.ul`
+const BarContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: 1300px) {
+    flex-direction: column;
+  }
+`;
+
+const BarUl = styled.ul`
   list-style: none;
   margin: 0;
   padding: 0.25rem 0 0.25rem 0;
-  width: 100%;
   display: flex;
   font-size: 1.5rem;
+  width: 50%;
+  flex-wrap: wrap;
+
+  @media (max-width: 1300px) {
+    width: 100%;
+  }
+`;
+
+const SecondBarUl = styled(BarUl)`
+  justify-content: flex-end;
+  @media (max-width: 1300px) {
+    justify-content: flex-start;
+  }
+  
+  label {
+    cursor: pointer;
+    margin: auto 0 auto 0; 
+    
+    input {
+      margin: auto 0.25rem auto 0;
+        vertical-align: middle;
+    }
+    span {
+      vertical-align: text-top;
+    }
+  }
 `;
 
 const BarLi = styled.li`
@@ -23,11 +58,11 @@ const BarLiWithPopup = styled(BarLi)`
   min-width: ${props => props.theme.typePopupMinWidth};
 
   a[data-caret="true"]::after {
-    content: "⮟";
+    content: " ⬇️";
   }
 
   &:hover a[data-caret="true"]::after, &:focus-within a[data-caret="true"]::after {
-    content: "⮝"
+    content: " ⬆️"
   }
 
   menu {
@@ -139,9 +174,9 @@ const SearchLi = (props) => {
 
     const handleResultClick = (e, lat, long) => {
         e.preventDefault();
-        doMapMove({latitude: lat, longitude: long})
+        doMapMove({latitude: lat, longitude: long});
         setSearchString('');
-        setResults([])
+        setResults([]);
     };
 
     return <BarLiWithPopup>
@@ -201,40 +236,64 @@ const ControlBar = (props) => {
         localStrings,
         searchBackend,
         doMapMove,
+        reduceMotion,
+        setReduceMotion,
+        hideMap,
+        setHideMap,
+        centerMap,
     } = props;
 
     return <BarContainer>
-        <SearchLi localStrings={localStrings} searchBackend={searchBackend} doMapMove={doMapMove}/>
-        <BarLiWithPopup aria-haspopup={true}>
-            <ShowTypesText options={options} localStrings={localStrings} showAllTypes={showAllTypes}/>
-            <ShowMenu aria-label="submenu">
-                <li>
-                    <label>
-                        <ControlCheck type="checkbox" onChange={handleShowAllClick} checked={showAllTypes}/>
-                        {localStrings?.showAll ?? 'Show all'}
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <ControlCheck type="checkbox"
-                                      onChange={handleShowClosedRightNowClick}
-                                      checked={showClosedRightNow}/>
-                        {localStrings?.closedRightNow ?? 'Closed right now'}
-                    </label>
-                </li>
-                {options.map((option, index) => {
-                        return <li key={index}>
-                            <label>
-                                <ControlCheck type="checkbox"
-                                              checked={option.showing}
-                                              onChange={() => handleOptionClick(index)}/>
-                                {option.name}
-                            </label>
-                        </li>;
-                    },
-                )}
-            </ShowMenu>
-        </BarLiWithPopup>
+        <BarUl>
+            <SearchLi localStrings={localStrings} searchBackend={searchBackend} doMapMove={doMapMove}/>
+            <BarLiWithPopup aria-haspopup={true}>
+                <ShowTypesText options={options} localStrings={localStrings} showAllTypes={showAllTypes}/>
+                <ShowMenu aria-label="submenu">
+                    <li>
+                        <label>
+                            <ControlCheck type="checkbox" onChange={handleShowAllClick} checked={showAllTypes}/>
+                            {localStrings?.showAll ?? 'Show all'}
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <ControlCheck type="checkbox"
+                                          onChange={handleShowClosedRightNowClick}
+                                          checked={showClosedRightNow}/>
+                            {localStrings?.closedRightNow ?? 'Closed right now'}
+                        </label>
+                    </li>
+                    {options.map((option, index) => {
+                            return <li key={index}>
+                                <label>
+                                    <ControlCheck type="checkbox"
+                                                  checked={option.showing}
+                                                  onChange={() => handleOptionClick(index)}/>
+                                    {option.name}
+                                </label>
+                            </li>;
+                        },
+                    )}
+                </ShowMenu>
+            </BarLiWithPopup>
+        </BarUl>
+        <SecondBarUl>
+            <BarLi>
+                <label>
+                    <input type="checkbox" value={reduceMotion} onChange={e => setReduceMotion(e.target.checked)}/>
+                    <span>{localStrings?.reduceMotion ?? 'Reduce motion'}</span>
+                </label>
+            </BarLi>
+            <BarLi>
+                <label>
+                    <input type="checkbox" value={hideMap} onChange={e => setHideMap(!!e.target.checked)}/>
+                    <span>{localStrings?.hideMap ?? 'Hide map'}</span>
+                </label>
+            </BarLi>
+            <BarLi>
+                <Button onClick={centerMap}>{localStrings?.centerMap ?? 'Center map on current location'}</Button>
+            </BarLi>
+        </SecondBarUl>
     </BarContainer>;
 };
 
@@ -250,6 +309,11 @@ ControlBar.propTypes = {
     showClosedRightNow: PropTypes.bool.isRequired,
     showAllTypes: PropTypes.bool.isRequired,
     doMapMove: PropTypes.func.isRequired,
+    reduceMotion: PropTypes.bool.isRequired,
+    setReduceMotion: PropTypes.func.isRequired,
+    hideMap: PropTypes.bool.isRequired,
+    setHideMap: PropTypes.func.isRequired,
+    centerMap: PropTypes.func.isRequired,
     localStrings: PropTypes.shape(localStringsPropTypes),
     searchBackend: PropTypes.string,
 };
