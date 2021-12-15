@@ -21,6 +21,7 @@ const BarUl = styled.ul`
   font-size: 1.5rem;
   width: 50%;
   flex-wrap: wrap;
+  align-content: end;
 
   @media (max-width: 1300px) {
     width: 100%;
@@ -32,15 +33,16 @@ const SecondBarUl = styled(BarUl)`
   @media (max-width: 1300px) {
     justify-content: flex-start;
   }
-  
+
   label {
     cursor: pointer;
-    margin: auto 0 auto 0; 
-    
+    margin: auto 0 auto 0;
+
     input {
       margin: auto 0.25rem auto 0;
-        vertical-align: middle;
+      vertical-align: middle;
     }
+
     span {
       vertical-align: text-top;
     }
@@ -240,7 +242,6 @@ const ControlBar = (props) => {
         setReduceMotion,
         hideMap,
         setHideMap,
-        centerMap,
     } = props;
 
     return <BarContainer>
@@ -290,9 +291,6 @@ const ControlBar = (props) => {
                     <span>{localStrings?.hideMap ?? 'Hide map'}</span>
                 </label>
             </BarLi>
-            <BarLi>
-                <Button onClick={centerMap}>{localStrings?.centerMap ?? 'Center map on current location'}</Button>
-            </BarLi>
         </SecondBarUl>
     </BarContainer>;
 };
@@ -313,7 +311,6 @@ ControlBar.propTypes = {
     setReduceMotion: PropTypes.func.isRequired,
     hideMap: PropTypes.bool.isRequired,
     setHideMap: PropTypes.func.isRequired,
-    centerMap: PropTypes.func.isRequired,
     localStrings: PropTypes.shape(localStringsPropTypes),
     searchBackend: PropTypes.string,
 };
