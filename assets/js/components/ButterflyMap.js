@@ -28,7 +28,9 @@ const Markers = React.memo((props) => {
                         getCursor={() => 'pointer'}
                 >
                     <PointerBox>
-                        <pointType.icon style={{height: '50px', width: '50px'}}/>
+                        {!!point.icon &&
+                        <point.icon data-banana='fooo' style={{height: '50px', width: '50px'}}/>
+                        || <pointType.icon style={{height: '50px', width: '50px'}}/>}
                     </PointerBox>
                 </Marker>);
         })}
