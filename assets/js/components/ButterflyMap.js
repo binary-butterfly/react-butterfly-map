@@ -11,25 +11,6 @@ import {filterHours} from '../data/helpers';
 import ownCss from '../../css/ButterflyMap.css'; // NOT unused.
 import css from 'maplibre-gl/dist/maplibre-gl.css'; // NOT unused either.
 
-const SubMapBar = styled.div`
-  margin-top: 0.5rem;
-  display: flex;
-  font-size: 1.2rem;
-  line-height: 1.2rem;
-`;
-
-const AnimateLabel = styled.label`
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-left: 1rem;
-  cursor: pointer;
-  display: flex;
-`;
-
-const AnimateCheckBox = styled.input`
-  margin: auto 0.5rem auto;
-`;
-
 const PointerBox = styled.div`
   cursor: pointer;
 `;
@@ -74,6 +55,7 @@ export const ButterflyMap = (props) => {
     const [userPosition, setUserPosition] = React.useState(null);
     const [centerMapDisabled, setCenterMapDisabled] = React.useState(true);
     const [paginationPage, setPaginationPage] = React.useState(1);
+    const [hideMap, setHideMap] = React.useState(false);
 
     const [viewport, setViewport] = React.useState({
         ...props.center,
@@ -289,22 +271,20 @@ export const ButterflyMap = (props) => {
             localStrings={props.localStrings}
             searchBackend={props.searchBackend}
             doMapMove={doMapMove}
+            reduceMotion={reduceMotion}
+            setReduceMotion={setReduceMotion}
+            hideMap={hideMap}
+            setHideMap={setHideMap}
+            centerMap={handleCenterMapClick}
         />
-        <ReactMapGL {...viewport} onViewportChange={(newViewport) => setViewport(newViewport)}
+        {!hideMap &&
+        <ReactMapGL {...viewport}
+                    onViewportChange={(newViewport) => setViewport(newViewport)}
                     mapStyle={props.tileServer}>
             <Markers doMapMove={doMapMove} displayPointTypes={displayPointTypes}/>
             <AttributionControl compact={true}/>
         </ReactMapGL>
-        <SubMapBar>
-            <Button disabled={centerMapDisabled} onClick={handleCenterMapClick}>
-                {props.localStrings?.centerMap ?? 'Center map on current location'}
-            </Button>
-            <AnimateLabel>
-                <AnimateCheckBox type="checkbox" checked={reduceMotion}
-                                 onChange={e => setReduceMotion(e.target.checked)}/>
-                {props.localStrings?.reduceMotion ?? 'Reduce motion'}
-            </AnimateLabel>
-        </SubMapBar>
+        }
         {typeOptions.length > 0 &&
         <PointBar pointTypes={displayPointTypes}
                   position={position}
