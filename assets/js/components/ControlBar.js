@@ -253,6 +253,7 @@ const ControlBar = (props) => {
         setReduceMotion,
         hideMap,
         setHideMap,
+        hoursSet
     } = props;
 
     return <BarContainer>
@@ -267,14 +268,14 @@ const ControlBar = (props) => {
                             {localStrings?.showAll ?? 'Show all'}
                         </label>
                     </li>
-                    <li>
+                    {hoursSet && <li>
                         <label>
                             <ControlCheck type="checkbox"
                                           onChange={handleShowClosedRightNowClick}
                                           checked={showClosedRightNow}/>
                             {localStrings?.closedRightNow ?? 'Closed right now'}
                         </label>
-                    </li>
+                    </li>}
                     {options.map((option, index) => {
                             return <li key={index}>
                                 <label>
@@ -322,6 +323,7 @@ ControlBar.propTypes = {
     setReduceMotion: PropTypes.func.isRequired,
     hideMap: PropTypes.bool.isRequired,
     setHideMap: PropTypes.func.isRequired,
+    hoursSet: PropTypes.bool.isRequired,
     localStrings: PropTypes.shape(localStringsPropTypes),
     searchBackend: PropTypes.string,
 };

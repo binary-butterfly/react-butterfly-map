@@ -62,6 +62,7 @@ export const ButterflyMap = (props) => {
     const [centerMapDisabled, setCenterMapDisabled] = React.useState(true);
     const [paginationPage, setPaginationPage] = React.useState(1);
     const [hideMap, setHideMap] = React.useState(false);
+    const [hoursSet, setHoursSet] = React.useState(false);
 
     const [viewport, setViewport] = React.useState({
         ...props.center,
@@ -281,6 +282,7 @@ export const ButterflyMap = (props) => {
             setReduceMotion={setReduceMotion}
             hideMap={hideMap}
             setHideMap={setHideMap}
+            hoursSet={hoursSet}
         />
         {!hideMap && <>
             <ReactMapGL {...viewport}
@@ -289,8 +291,9 @@ export const ButterflyMap = (props) => {
                 <Markers doMapMove={doMapMove} displayPointTypes={displayPointTypes}/>
                 <AttributionControl compact={true}/>
             </ReactMapGL>
-            <CenterMapButton
-                onClick={handleCenterMapClick}>{props.localStrings?.centerMap ?? 'Center map on current location'}</CenterMapButton>
+            <CenterMapButton disabled={centerMapDisabled} onClick={handleCenterMapClick}>
+                {props.localStrings?.centerMap ?? 'Center map on current location'}
+            </CenterMapButton>
         </>}
         {typeOptions.length > 0 &&
         <PointBar pointTypes={displayPointTypes}
@@ -300,6 +303,7 @@ export const ButterflyMap = (props) => {
                   localStrings={props.localStrings}
                   page={paginationPage}
                   setPage={setPaginationPage}
+                  setHoursSet={setHoursSet}
         />}
     </ThemeProvider>;
 };
