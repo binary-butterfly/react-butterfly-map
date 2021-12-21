@@ -47,10 +47,10 @@ const Root = () => {
                             icon: SpecialExampleMarker,
                             hours: {
                                 sunday: false,
-                                monday: true,
+                                monday: false,
                                 tuesday: false,
-                                wednesday: [{from: ['9', '0'], until: ['23', '0']}],
-                                thursday: [{from: ['15', '0'], until: ['24', '0']}],
+                                wednesday: false,
+                                thursday: false,
                                 friday: false,
                                 saturday: false,
                             },
