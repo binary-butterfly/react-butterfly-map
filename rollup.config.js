@@ -9,7 +9,6 @@ import svgr from '@svgr/rollup';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
 import {terser} from 'rollup-plugin-terser';
 
 const env = process.env.NODE_ENV;
@@ -42,12 +41,6 @@ const config = {
         }),
         commonjs({
             exclude: 'assets/**',
-            namedExports: {
-                'react': Object.keys(React),
-                'react-dom': Object.keys(ReactDOM),
-                'react-is': Object.keys(require('react-is')),
-                'prop-types': Object.keys(PropTypes),
-            },
         }),
         babel({
             'babelHelpers': 'runtime',
@@ -77,7 +70,10 @@ const config = {
             ],
         }),
         globals(),
-        replace({'process.env.NODE_ENV': JSON.stringify(env === 'production' ? 'production' : 'development')}),
+        replace({
+            'process.env.NODE_ENV': JSON.stringify(env === 'production' ? 'production' : 'development'),
+            'preventAssignment': true,
+        }),
     ],
 };
 
