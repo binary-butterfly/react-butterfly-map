@@ -23,10 +23,17 @@ const SmallLink = styled(Link)`
   font-size: 0.8rem !important;
 `;
 
-const checkPointHours = (pointHours) => {
+const checkPointHours = (point, setHoursSet) => {
+    if (point.hasHours) {
+        return true;
+    }
+
+    const pointHours = point.hours;
     if (pointHours) {
         for (const index of weekdays) {
             if (pointHours[index]) {
+                setHoursSet(true);
+                point.hasHours = true;
                 return true;
             }
         }
@@ -35,7 +42,7 @@ const checkPointHours = (pointHours) => {
 };
 
 const PointCard = (props) => {
-    const {point, handleSidebarMarkerClick, selected} = props;
+    const {point, handleSidebarMarkerClick, selected, setHoursSet} = props;
 
     return <Card selected={selected}>
         <CardContent selected={selected}>
@@ -51,7 +58,8 @@ const PointCard = (props) => {
                 {props.localStrings?.directions ?? 'Directions (Google Maps)'}
             </SmallLink>
             <TypeText>{point.type}</TypeText>
-            {checkPointHours(point.hours) && <OpenHours hours={point.hours} until={point.valid?.until} localStrings={props.localStrings}/>}
+            {checkPointHours(point, setHoursSet) &&
+            <OpenHours hours={point.hours} until={point.valid?.until} localStrings={props.localStrings}/>}
         </CardContent>
     </Card>;
 };
@@ -60,6 +68,7 @@ PointCard.propTypes = {
     point: PropTypes.object.isRequired, // TODO: shape
     selected: PropTypes.bool.isRequired,
     handleSidebarMarkerClick: PropTypes.func.isRequired,
+    setHoursSet: PropTypes.func.isRequired,
     userPosition: PropTypes.object, // TODO: shape
     localStrings: PropTypes.shape(localStringsPropTypes),
 };
