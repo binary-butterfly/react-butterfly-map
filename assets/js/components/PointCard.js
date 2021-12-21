@@ -17,7 +17,8 @@ const Link = styled.a`
   font-size: 1.2rem!important;
 `
 
-const SmallLink = styled.a`
+const SmallLink = styled(Link)`
+  line-height: 0.8rem;
   font-size: 0.8rem!important;
 `
 

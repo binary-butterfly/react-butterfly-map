@@ -8,7 +8,6 @@ import ExampleMarker2 from '../img/exampleMarker2.svg';
 import SpecialExampleMarker from '../img/specialExampleMarker.svg';
 
 const Main = styled.div`
-  box-sizing: border-box;
   width: 100%;
   height: 100%;
 `;
@@ -30,6 +29,7 @@ const Root = () => {
                             position: {latitude: 47.850670, longitude: 13.090983},
                             text: 'This is an example',
                             additionalInfo: 'Sportplatz',
+                            website: 'example.invalid.tld',
                             hours: {
                                 sunday: [{from: ['7', '0'], until: ['22', '0']}],
                                 monday: [{from: ['7', '0'], until: ['22', '0']}],
@@ -38,7 +38,6 @@ const Root = () => {
                                 thursday: [{from: ['7', '0'], until: ['22', '0']}],
                                 friday: [{from: ['7', '0'], until: ['22', '0']}],
                                 saturday: [{from: ['7', '0'], until: ['22', '0']}],
-
                             },
                         },
                         {
