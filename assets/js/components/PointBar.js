@@ -17,7 +17,7 @@ const CardContainer = styled.div`
 
 const PointBar = (props) => {
     const [points, setPoints] = React.useState([]);
-    const [entriesPerPage, _setEntriesPerPage] = React.useState(window.innerWidth < 1000 ? 2 : 5);
+    const [entriesPerPage, _setEntriesPerPage] = React.useState(window.innerWidth < 1000 ? 4 : 8);
     const {pointTypes, moveMapPosition, position, page, setPage} = props;
 
     const setEntriesPerPage = (newEntriesPerPage) => {
