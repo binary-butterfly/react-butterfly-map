@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-import {localStringsPropTypes} from '../data/propTypes';
-import Button from './Button';
+import {customFiltersPropTypes, localStringsPropTypes} from '../data/propTypes';
 
 const BarContainer = styled.div`
   display: flex;
@@ -22,12 +21,14 @@ const BarUl = styled.ul`
   width: 50%;
   flex-wrap: wrap;
   align-content: end;
-  
-  /* Make sure font sizes aren't overwritten */
+
   li {
+    /* Make sure font sizes aren't overwritten */
+
     a {
       font-size: 1.25rem;
     }
+
     label {
       font-size: 1.25rem;
     }
@@ -48,7 +49,7 @@ const SecondBarUl = styled(BarUl)`
     cursor: pointer;
     margin: auto 0 auto 0;
     line-height: initial;
-    
+
     input {
       margin: auto 0.25rem auto 0;
       vertical-align: middle;
@@ -253,7 +254,10 @@ const ControlBar = (props) => {
         setReduceMotion,
         hideMap,
         setHideMap,
-        hoursSet
+        hoursSet,
+        customFilters,
+        customFilterValues,
+        updateCustomFilterValue,
     } = props;
 
     return <BarContainer>
@@ -261,7 +265,7 @@ const ControlBar = (props) => {
             <SearchLi localStrings={localStrings} searchBackend={searchBackend} doMapMove={doMapMove}/>
             <BarLiWithPopup aria-haspopup={true}>
                 <ShowTypesText options={options} localStrings={localStrings} showAllTypes={showAllTypes}/>
-                <ShowMenu aria-label="submenu">
+                <ShowMenu aria-label={localStrings?.typesSubMenu ?? 'POI types submenu'}>
                     <li>
                         <label>
                             <ControlCheck type="checkbox" onChange={handleShowAllClick} checked={showAllTypes}/>
@@ -276,6 +280,19 @@ const ControlBar = (props) => {
                             {localStrings?.closedRightNow ?? 'Closed right now'}
                         </label>
                     </li>}
+                    {customFilters && <>
+                        {customFilters.map((element, index) => <li key={'customFilter' + index}>
+                            <label>
+                                <ControlCheck type="checkbox"
+                                              onChange={(e) => updateCustomFilterValue(index, e.target.checked)}
+                                              checked={customFilterValues[index]}/>
+                                {element.displayText}
+                            </label>
+                        </li>)}
+                    </>}
+                    <li>
+                        <hr/>
+                    </li>
                     {options.map((option, index) => {
                             return <li key={index}>
                                 <label>
@@ -326,6 +343,9 @@ ControlBar.propTypes = {
     hoursSet: PropTypes.bool.isRequired,
     localStrings: PropTypes.shape(localStringsPropTypes),
     searchBackend: PropTypes.string,
+    customFilters: customFiltersPropTypes,
+    customFilterValues: PropTypes.arrayOf(PropTypes.bool),
+    updateCustomFilterValue: PropTypes.func.isRequired,
 };
 
 export default ControlBar;

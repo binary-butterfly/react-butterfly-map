@@ -34,6 +34,8 @@ export const localStringsPropTypes = {
     previousPage: PropTypes.string.isRequired,
     searchError: PropTypes.string,
     hideMap: PropTypes.string.isRequired,
+    typesSubMenu: PropTypes.string.isRequired,
+    filterSubMenu: PropTypes.string.isRequired,
 };
 
 export const dayPropTypes = PropTypes.oneOfType(
@@ -57,3 +59,10 @@ export const hoursPropTypes = PropTypes.shape({
     saturday: dayPropTypes,
     text: PropTypes.string,
 });
+
+export const customFiltersPropTypes = PropTypes.arrayOf(PropTypes.shape({
+    displayText: PropTypes.string.isRequired,
+    fieldName: PropTypes.string.isRequired,
+    defaultValue: PropTypes.bool.isRequired,
+    compareWith: PropTypes.bool.isRequired,
+}));
