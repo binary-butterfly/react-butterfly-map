@@ -20,6 +20,20 @@ const Root = () => {
             center={{latitude: 47.79, longitude: 13.0550}}
             height={500}
             searchBackend="testing"
+            customFilters={[
+                {
+                    displayText: 'Bananas',
+                    defaultValue: true,
+                    fieldName: 'banana',
+                    compareWith: false,
+                },
+                {
+                    displayText: 'Apples',
+                    defaultValue: false,
+                    fieldName: 'apple',
+                    compareWith: false,
+                }
+            ]}
             pointTypes={[
                 {
                     name: 'Example 1',
@@ -30,6 +44,7 @@ const Root = () => {
                             text: 'This is an example',
                             additionalInfo: 'Sportplatz',
                             website: 'example.invalid.tld',
+                            banana: true,
                             hours: {
                                 sunday: [{from: ['7', '0'], until: ['22', '0']}],
                                 monday: [{from: ['7', '0'], until: ['22', '0']}],
@@ -69,6 +84,7 @@ const Root = () => {
                             valid: {
                                 until: '2100-12-31',
                             },
+                            banana: false,
                             hours: {
                                 sunday: false,
                                 monday: [
@@ -143,6 +159,7 @@ const Root = () => {
                             valid: {
                                 from: new Date(1970, 1, 1),
                             },
+                            apple: true,
                             hours: {
                                 sunday: false,
                                 monday: [{from: ['7', '0'], until: ['22', '0']}],
