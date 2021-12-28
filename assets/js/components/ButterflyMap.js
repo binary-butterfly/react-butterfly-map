@@ -72,7 +72,16 @@ export const ButterflyMap = (props) => {
     const [centerMapDisabled, setCenterMapDisabled] = React.useState(true);
     const [paginationPage, setPaginationPage] = React.useState(1);
     const [hideMap, setHideMap] = React.useState(false);
-    const [hoursSet, setHoursSet] = React.useState(false);
+    const [hoursSet, setHoursSet] = React.useState(() => {
+        for (const pointType of props.pointTypes) {
+            for (const point of pointType.points){
+                if (point.hours){
+                    return true;
+                }
+            }
+        }
+        return false;
+    });
     const [customFilterValues, setCustomFilterValues] = React.useState(customFilters.map((customFilter) => customFilter.defaultValue));
 
     const updateCustomFilterValue = (index, newVal) => {
@@ -357,7 +366,6 @@ export const ButterflyMap = (props) => {
                   localStrings={props.localStrings}
                   page={paginationPage}
                   setPage={setPaginationPage}
-                  setHoursSet={setHoursSet}
         />}
     </ThemeProvider>;
 };

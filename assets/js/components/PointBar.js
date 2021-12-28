@@ -66,7 +66,6 @@ const PointBar = (props) => {
                     key={index}
                     selected={page === 1 && index === 0}
                     handleSidebarMarkerClick={handleSidebarMarkerClick}
-                    setHoursSet={props.setHoursSet}
                     userPosition={props.userPosition}
                     localStrings={props.localStrings}
                 />,
@@ -88,7 +87,6 @@ PointBar.propTypes = {
     position: PropTypes.shape({latitude: PropTypes.number, longitude: PropTypes.number}).isRequired,
     page: PropTypes.number.isRequired,
     setPage: PropTypes.func.isRequired,
-    setHoursSet: PropTypes.func.isRequired,
     userPosition: PropTypes.shape({latitude: PropTypes.number, longitude: PropTypes.number}),
     localStrings: PropTypes.shape(localStringsPropTypes),
 };
