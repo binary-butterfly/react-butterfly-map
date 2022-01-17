@@ -310,7 +310,7 @@ const ControlBar = (props) => {
         <SecondBarUl>
             <BarLi>
                 <label>
-                    <input type="checkbox" value={reduceMotion} onChange={e => setReduceMotion(e.target.checked)}/>
+                    <input type="checkbox" checked={reduceMotion} onChange={e => setReduceMotion(e.target.checked)}/>
                     <span>{localStrings?.reduceMotion ?? 'Reduce motion'}</span>
                 </label>
             </BarLi>

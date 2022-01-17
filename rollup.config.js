@@ -6,9 +6,6 @@ import styles from 'rollup-plugin-styles';
 import babel from '@rollup/plugin-babel';
 import alias from '@rollup/plugin-alias';
 import svgr from '@svgr/rollup';
-
-import React from 'react';
-import ReactDOM from 'react-dom';
 import {terser} from 'rollup-plugin-terser';
 
 const env = process.env.NODE_ENV;

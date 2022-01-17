@@ -33,7 +33,7 @@ const Markers = React.memo((props) => {
                 >
                     <PointerBox>
                         {!!point.icon &&
-                        <point.icon data-banana="fooo" style={{height: '50px', width: '50px'}}/>
+                        <point.icon style={{height: '50px', width: '50px'}}/>
                         || <pointType.icon style={{height: '50px', width: '50px'}}/>}
                     </PointerBox>
                 </Marker>);
@@ -82,7 +82,7 @@ export const ButterflyMap = (props) => {
         }
         return false;
     });
-    const [customFilterValues, setCustomFilterValues] = React.useState(customFilters.map((customFilter) => customFilter.defaultValue));
+    const [customFilterValues, setCustomFilterValues] = React.useState(customFilters ? customFilters.map((customFilter) => customFilter.defaultValue) : []);
 
     const updateCustomFilterValue = (index, newVal) => {
         const newCustomFilterValues = [...customFilterValues];
