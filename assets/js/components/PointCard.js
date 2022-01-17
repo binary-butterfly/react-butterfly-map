@@ -21,6 +21,7 @@ const Link = styled.a`
 const SmallLink = styled(Link)`
   line-height: 0.8rem;
   font-size: 0.8rem !important;
+  margin-bottom: 0.25rem;
 `;
 
 const checkPointHours = (point) => {

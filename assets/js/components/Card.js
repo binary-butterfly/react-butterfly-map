@@ -16,4 +16,6 @@ export const CardContent = styled.div`
   border-radius: 0.25rem;
   width: 100%;
   text-align: left!important;
+  overflow-x: hidden;
+  overflow-wrap: anywhere;
 `;
