@@ -82,7 +82,7 @@ export const ButterflyMap = (props) => {
         }
         return false;
     });
-    const [customFilterValues, setCustomFilterValues] = React.useState(customFilters.map((customFilter) => customFilter.defaultValue));
+    const [customFilterValues, setCustomFilterValues] = React.useState(customFilters ? customFilters.map((customFilter) => customFilter.defaultValue) : []);
 
     const updateCustomFilterValue = (index, newVal) => {
         const newCustomFilterValues = [...customFilterValues];
