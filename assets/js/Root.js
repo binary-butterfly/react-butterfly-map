@@ -41,7 +41,7 @@ const Root = () => {
                     points: [
                         {
                             position: {latitude: 47.850670, longitude: 13.090983},
-                            text: 'This is an example',
+                            text: 'This is an example with very long text that will not overflow it\'s container banananananananananananananananananananananana',
                             additionalInfo: 'Sportplatz',
                             website: 'example.invalid.tld',
                             banana: true,
