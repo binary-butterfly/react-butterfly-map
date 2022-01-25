@@ -27,7 +27,13 @@ export const MapSidebar = styled.div`
   }
 
   &[data-showing=true] {
-    width: 20%;
+    width: 25rem;
+  }
+  
+  @media(max-width: 1000px) {
+    &[data-showing=true] {
+      width: 90%;
+    }
   }
 
   &[data-showing=false] > div > *, &[data-showing=false] > div > table tbody tr td.special-day, &[data-showing=false] > div > div > button {
