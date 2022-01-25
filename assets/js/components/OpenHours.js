@@ -91,11 +91,11 @@ const HoursRow = (props) => {
     return <Tr>
         <Th scope="row">{title}</Th>
         {typeof dayHours === 'boolean'
-            ? dayHours === true ? <OpenDay>{localStrings?.allDay ?? 'All day'}</OpenDay> :
-                <ClosedDay>{localStrings?.closed ?? 'Closed'}</ClosedDay>
+            ? dayHours === true ? <OpenDay className='special-day'>{localStrings?.allDay ?? 'All day'}</OpenDay> :
+                <ClosedDay className='special-day'>{localStrings?.closed ?? 'Closed'}</ClosedDay>
             : <>
                 {!!closed
-                    ? <ClosedDay>
+                    ? <ClosedDay className='special-day'>
                         <DayHoursTd dayHours={dayHours} localStrings={localStrings}/>
                     </ClosedDay>
                     : <Td>
@@ -131,42 +131,32 @@ const OpenHours = (props) => {
     const hour = now.getHours();
     const minutes = now.getMinutes();
 
-    if (displayMore) {
-        return <>
-            <HoursTable>
-                <tbody>
-                {Object.entries(hours).map(([day, dayHours], index) => {
+    return <>
+        <HoursTable>
+            <tbody>
+            {displayMore
+                ? Object.entries(hours).map(([day, dayHours], index) => {
                     if (typeof dayHours === 'object' || typeof dayHours === 'boolean') {
                         return <HoursRow key={index} title={localStrings?.[day] ?? day}
                                          dayHours={dayHours} localStrings={localStrings}/>;
                     }
-                })}
-                </tbody>
-            </HoursTable>
-            <UntilWarning until={props.until} localStrings={localStrings}/>
-            {!!hours.text && <Small>{hours.text}</Small>}
-            <MoreOrLessButton onClick={() => setDisplayMore(false)}>
-                {localStrings?.showLess ?? 'Show less'}
-            </MoreOrLessButton>
-        </>;
-    } else {
-        return <>
-            <HoursTable>
-                <tbody>
-                <HoursRow title={localStrings?.today ?? 'Today'} dayHours={hours[weekdays[day]]}
-                          localStrings={localStrings}
-                          closed={!filterHours({hours: hours}, day, hour, minutes)}/>
-                <HoursRow title={localStrings?.tomorrow ?? 'Tomorrow'}
-                          dayHours={hours[weekdays[day === 6 ? 0 : day + 1]]}
-                          localStrings={localStrings}/>
-                </tbody>
-            </HoursTable>
-            <UntilWarning until={props.until} localStrings={localStrings}/>
-            <MoreOrLessButton onClick={() => setDisplayMore(true)}>
-                {localStrings?.showMore ?? 'Show more'}
-            </MoreOrLessButton>
-        </>;
-    }
+                })
+                : <>
+                    <HoursRow title={localStrings?.today ?? 'Today'} dayHours={hours[weekdays[day]]}
+                              localStrings={localStrings}
+                              closed={!filterHours({hours: hours}, day, hour, minutes)}/>
+                    <HoursRow title={localStrings?.tomorrow ?? 'Tomorrow'}
+                              dayHours={hours[weekdays[day === 6 ? 0 : day + 1]]}
+                              localStrings={localStrings}/>
+                </>}
+            </tbody>
+        </HoursTable>
+        <UntilWarning until={props.until} localStrings={localStrings}/>
+        {!!hours.text && <Small>{hours.text}</Small>}
+        <MoreOrLessButton onClick={() => setDisplayMore(!displayMore)}>
+            {displayMore ? localStrings?.showLess ?? 'Show less' : localStrings?.showMore ?? 'Show more'}
+        </MoreOrLessButton>
+    </>;
 };
 
 // Hours has to be an array with the index 0 containing hours for sunday and counting up from there.

@@ -1,3 +1,6 @@
+import ownCss from '../../css/ButterflyMap.css'; // NOT unused.
+import css from 'maplibre-gl/dist/maplibre-gl.css'; // NOT unused either.
+
 import PropTypes from 'prop-types';
 import React from 'react';
 import Button from './Button';
@@ -5,11 +8,9 @@ import ControlBar from './ControlBar';
 import PointBar from './PointBar';
 import styled, {ThemeProvider} from 'styled-components';
 import ReactMapGL, {AttributionControl, FlyToInterpolator, Marker} from 'react-map-gl';
-import {localStringsPropTypes, dayPropTypes, hoursPropTypes} from '../data/propTypes';
+import {localStringsPropTypes, hoursPropTypes} from '../data/propTypes';
 import {filterHours} from '../data/helpers';
-
-import ownCss from '../../css/ButterflyMap.css'; // NOT unused.
-import css from 'maplibre-gl/dist/maplibre-gl.css'; // NOT unused either.
+import {MapSidebar, SidebarContent} from './Sidebar';
 
 const PointerBox = styled.div`
   cursor: pointer;
@@ -19,15 +20,24 @@ const CenterMapButton = styled(Button)`
   margin: 0.5rem 0 0.5rem 0;
 `;
 
+const MapAndBarContainer = styled.div`
+  display: flex;
+`;
+
+const MapContainer = styled.div`
+  width: 100%;
+  z-index: 0;
+`;
+
 const Markers = React.memo((props) => {
     // Use memo to avoid needless re-renders of the markers
-    const {displayPointTypes, doMapMove} = props;
+    const {displayPointTypes, handleMapMarkerClick} = props;
 
     return <>
         {displayPointTypes.map((pointType) => {
             return pointType.points.map((point, index) =>
                 <Marker key={index} {...point.position}
-                        onClick={() => doMapMove(point.position)}
+                        onClick={() => handleMapMarkerClick(point.position)}
                         id={'react-butterfly-map-pointer' + pointType.name + index}
                         getCursor={() => 'pointer'}
                 >
@@ -42,8 +52,12 @@ const Markers = React.memo((props) => {
 });
 
 Markers.propTypes = {
-    doMapMove: PropTypes.func.isRequired,
+    handleMapMarkerClick: PropTypes.func.isRequired,
     displayPointTypes: PropTypes.array.isRequired,
+};
+
+const calculateDistance = (position, to) => {
+    return Math.abs(position.latitude - to.latitude) + Math.abs(position.longitude - to.longitude);
 };
 
 export const ButterflyMap = (props) => {
@@ -58,8 +72,8 @@ export const ButterflyMap = (props) => {
     const [typeOptions, setTypeOptions] = React.useState([]);
     const [showAllTypes, setShowAllTypes] = React.useState(() => {
         if (customFilters) {
-            for (const customFilter of customFilters){
-                if (customFilter.defaultValue === false){
+            for (const customFilter of customFilters) {
+                if (customFilter.defaultValue === false) {
                     return false;
                 }
             }
@@ -68,21 +82,46 @@ export const ButterflyMap = (props) => {
     });
     const [showClosedRightNow, setShowClosedRightNow] = React.useState(true);
     const [displayPointTypes, setDisplayPointTypes] = React.useState([]);
+    const [displayPoints, setDisplayPoints] = React.useState([]);
     const [userPosition, setUserPosition] = React.useState(null);
     const [centerMapDisabled, setCenterMapDisabled] = React.useState(true);
     const [paginationPage, setPaginationPage] = React.useState(1);
     const [hideMap, setHideMap] = React.useState(false);
-    const [hoursSet, setHoursSet] = React.useState(() => {
+    const [sidebarShowing, setSidebarShowing] = React.useState(false);
+    const [customFilterValues, setCustomFilterValues] = React.useState(customFilters ? customFilters.map((customFilter) => customFilter.defaultValue) : []);
+    const [hoursSet] = React.useState(() => {
         for (const pointType of props.pointTypes) {
-            for (const point of pointType.points){
-                if (point.hours){
+            for (const point of pointType.points) {
+                if (point.hours) {
                     return true;
                 }
             }
         }
         return false;
     });
-    const [customFilterValues, setCustomFilterValues] = React.useState(customFilters ? customFilters.map((customFilter) => customFilter.defaultValue) : []);
+    const [viewport, setViewport] = React.useState({
+        ...props.center,
+        zoom: props.zoom ?? 8,
+        width: 'fit',
+        height: props.height,
+    });
+
+    React.useEffect(() => {
+        const newPoints = [];
+        displayPointTypes.map((pointType) => {
+            pointType.points.map((point, index) => {
+                newPoints.push({...point, type: pointType.name, index: index});
+            });
+        });
+
+        if (newPoints.length !== displayPoints.length) {
+            setPaginationPage(1);
+        }
+
+        setDisplayPoints(newPoints.sort((a, b) => {
+            return calculateDistance(position, a.position) - calculateDistance(position, b.position);
+        }));
+    }, [displayPointTypes, position]);
 
     const updateCustomFilterValue = (index, newVal) => {
         const newCustomFilterValues = [...customFilterValues];
@@ -97,13 +136,6 @@ export const ButterflyMap = (props) => {
         updateDisplayPointTypes(props.pointTypes, false, showClosedRightNow, newCustomFilterValues);
     };
 
-    const [viewport, setViewport] = React.useState({
-        ...props.center,
-        zoom: props.zoom ?? 8,
-        width: 'fit',
-        height: props.height,
-    });
-
     const theme = {
         reduceMotion: reduceMotion,
         error: props.theme?.error ?? 'red',
@@ -116,7 +148,22 @@ export const ButterflyMap = (props) => {
         popupBackgroundColor: props.theme?.popupBackgroundColor ?? 'white',
         highlightOptionColor: props.theme?.highlightOptionColor ?? 'lightgray',
         typePopupMinWidth: props.theme?.typePopupMinWidth ?? '15rem',
+        backgroundColor: props.theme?.backgroundColor ?? '#fff',
     };
+
+    const handlePointBarMarkerClick = (e, point) => {
+        moveMapPosition(e, point.position);
+
+        // Browsers have issues rendering too many animations at once, resulting in a buggy sidebar entry animation
+        // if it's triggered at the same time as the map is moved.
+        // To avoid that we wait for 50ms before showing the sidebar.
+        window.setTimeout(() => setSidebarShowing(true), 50);
+    };
+
+    const handleMapMarkerClick = (position) => {
+        doMapMove(position);
+        window.setTimeout(() => setSidebarShowing(true), 50);
+    }
 
     const updateDisplayPointTypes = (proposedTypes, updateTypeOptions = false, showClosed = showClosedRightNow, currentCustomFilterValues = customFilterValues) => {
         const newTypeOptions = [];
@@ -347,25 +394,33 @@ export const ButterflyMap = (props) => {
             customFilterValues={customFilterValues}
             updateCustomFilterValue={updateCustomFilterValue}
         />
-        {!hideMap && <>
-            <ReactMapGL {...viewport}
-                        onViewportChange={(newViewport) => setViewport(newViewport)}
-                        mapStyle={props.tileServer}>
-                <Markers doMapMove={doMapMove} displayPointTypes={displayPointTypes}/>
-                <AttributionControl compact={true}/>
-            </ReactMapGL>
-            <CenterMapButton disabled={centerMapDisabled} onClick={handleCenterMapClick}>
-                {props.localStrings?.centerMap ?? 'Center map on current location'}
-            </CenterMapButton>
-        </>}
+        {!hideMap && <MapAndBarContainer>
+            <MapSidebar data-showing={sidebarShowing} height={props.height}>
+                {displayPoints.length > 0 &&
+                <SidebarContent userPosition={userPosition}
+                                point={displayPoints[0]}
+                                localStrings={props.localStrings}
+                                setSidebarShowing={setSidebarShowing}/>}
+            </MapSidebar>
+            <MapContainer>
+                <ReactMapGL {...viewport}
+                            onViewportChange={(newViewport) => setViewport(newViewport)}
+                            mapStyle={props.tileServer}>
+                    <Markers handleMapMarkerClick={handleMapMarkerClick} displayPointTypes={displayPointTypes}/>
+                    <AttributionControl compact={true}/>
+                </ReactMapGL>
+                <CenterMapButton disabled={centerMapDisabled} onClick={handleCenterMapClick}>
+                    {props.localStrings?.centerMap ?? 'Center map on current location'}
+                </CenterMapButton>
+            </MapContainer>
+        </MapAndBarContainer>}
         {typeOptions.length > 0 &&
-        <PointBar pointTypes={displayPointTypes}
-                  position={position}
-                  moveMapPosition={moveMapPosition}
-                  userPosition={userPosition}
+        <PointBar userPosition={userPosition}
                   localStrings={props.localStrings}
                   page={paginationPage}
                   setPage={setPaginationPage}
+                  displayPoints={displayPoints}
+                  handlePointBarMarkerClick={handlePointBarMarkerClick}
         />}
     </ThemeProvider>;
 };
@@ -416,5 +471,6 @@ ButterflyMap.propTypes = {
         popupBackgroundColor: PropTypes.string,
         highlightOptionColor: PropTypes.string,
         typePopupMinWidth: PropTypes.string,
+        backgroundColor: PropTypes.string,
     }),
 };

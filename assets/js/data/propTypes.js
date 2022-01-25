@@ -36,6 +36,7 @@ export const localStringsPropTypes = {
     hideMap: PropTypes.string.isRequired,
     typesSubMenu: PropTypes.string.isRequired,
     filterSubMenu: PropTypes.string.isRequired,
+    hide_sidebar: PropTypes.string.isRequired,
 };
 
 export const dayPropTypes = PropTypes.oneOfType(

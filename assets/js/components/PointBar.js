@@ -16,43 +16,17 @@ const CardContainer = styled.div`
 `;
 
 const PointBar = (props) => {
-    const [points, setPoints] = React.useState([]);
     const [entriesPerPage, _setEntriesPerPage] = React.useState(window.innerWidth < 1000 ? 4 : 8);
-    const {pointTypes, moveMapPosition, position, page, setPage} = props;
+    const {page, setPage, displayPoints, userPosition, localStrings, handlePointBarMarkerClick} = props;
 
     const setEntriesPerPage = (newEntriesPerPage) => {
         _setEntriesPerPage(newEntriesPerPage);
         setPage(1);
     }
 
-    const handleSidebarMarkerClick = (e, point) => {
-        moveMapPosition(e, point.position);
-    };
-
-    const calculateDistance = (to) => {
-        return Math.abs(position.latitude - to.latitude) + Math.abs(position.longitude - to.longitude);
-    };
-
-    React.useEffect(() => {
-        const newPoints = [];
-        pointTypes.map((pointType) => {
-            pointType.points.map((point, index) => {
-                newPoints.push({...point, type: pointType.name, index: index});
-            });
-        });
-
-        if (newPoints.length !== points.length) {
-            setPage(1);
-        }
-
-        setPoints(newPoints.sort((a, b) => {
-            return calculateDistance(a.position) - calculateDistance(b.position);
-        }));
-    }, [pointTypes, position]);
-
     let paginatedPoints = [];
     for (let c = 0; c < entriesPerPage; c++) {
-        const point = points[entriesPerPage * (page - 1) + c];
+        const point = displayPoints[entriesPerPage * (page - 1) + c];
         if (point === undefined) {
             break;
         }
@@ -65,9 +39,9 @@ const PointBar = (props) => {
                     point={point}
                     key={index}
                     selected={page === 1 && index === 0}
-                    handleSidebarMarkerClick={handleSidebarMarkerClick}
-                    userPosition={props.userPosition}
-                    localStrings={props.localStrings}
+                    handlePointBarMarkerClick={handlePointBarMarkerClick}
+                    userPosition={userPosition}
+                    localStrings={localStrings}
                 />,
             )}
         </CardContainer>
@@ -75,18 +49,17 @@ const PointBar = (props) => {
                     setPage={setPage}
                     entriesPerPage={entriesPerPage}
                     setEntriesPerPage={setEntriesPerPage}
-                    entryCount={points.length}
-                    localStrings={props.localStrings}
+                    entryCount={displayPoints.length}
+                    localStrings={localStrings}
         />
     </>;
 };
 
 PointBar.propTypes = {
-    pointTypes: PropTypes.array.isRequired, // TODO: arrayOf shape
-    moveMapPosition: PropTypes.func.isRequired,
-    position: PropTypes.shape({latitude: PropTypes.number, longitude: PropTypes.number}).isRequired,
+    displayPoints: PropTypes.array.isRequired,
     page: PropTypes.number.isRequired,
     setPage: PropTypes.func.isRequired,
+    handlePointBarMarkerClick: PropTypes.func.isRequired,
     userPosition: PropTypes.shape({latitude: PropTypes.number, longitude: PropTypes.number}),
     localStrings: PropTypes.shape(localStringsPropTypes),
 };

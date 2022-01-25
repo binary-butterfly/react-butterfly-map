@@ -47,7 +47,7 @@ const Root = () => {
                             banana: true,
                             hours: {
                                 sunday: [{from: ['7', '0'], until: ['22', '0']}],
-                                monday: [{from: ['7', '0'], until: ['22', '0']}],
+                                monday: [{from: ['7', '0'], until: ['15', '0']}],
                                 tuesday: [{from: ['20', '0'], until: ['22', '0']}],
                                 wednesday: [{from: ['7', '0'], until: ['22', '0']}],
                                 thursday: [{from: ['7', '0'], until: ['22', '0']}],
