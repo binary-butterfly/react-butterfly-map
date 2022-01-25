@@ -17,3 +17,20 @@ export const filterHours = (point, currentDay, currentHour, currentMinute) => {
     }
     return false;
 };
+
+export const checkPointHours = (point) => {
+    if (point.hasHours) {
+        return true;
+    }
+
+    const pointHours = point.hours;
+    if (pointHours) {
+        for (const index of weekdays) {
+            if (pointHours[index]) {
+                point.hasHours = true;
+                return true;
+            }
+        }
+    }
+    return false;
+};
