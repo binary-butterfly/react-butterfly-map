@@ -84,6 +84,8 @@ export const ButterflyMap = (props) => {
     const [displayPointTypes, setDisplayPointTypes] = React.useState([]);
     const [displayPoints, setDisplayPoints] = React.useState([]);
     const [userPosition, setUserPosition] = React.useState(null);
+    const [positionRetry, setPositionRetry] = React.useState(false);
+    const [locationBlocked, setLocationBlocked] = React.useState(true);
     const [centerMapDisabled, setCenterMapDisabled] = React.useState(true);
     const [paginationPage, setPaginationPage] = React.useState(1);
     const [hideMap, setHideMap] = React.useState(false);
@@ -163,7 +165,7 @@ export const ButterflyMap = (props) => {
     const handleMapMarkerClick = (position) => {
         doMapMove(position);
         window.setTimeout(() => setSidebarShowing(true), 50);
-    }
+    };
 
     const updateDisplayPointTypes = (proposedTypes, updateTypeOptions = false, showClosed = showClosedRightNow, currentCustomFilterValues = customFilterValues) => {
         const newTypeOptions = [];
@@ -336,24 +338,38 @@ export const ButterflyMap = (props) => {
 
     React.useEffect(() => {
         const updateUserPosition = () => {
-            try {
-                if (isSecureContext) {
-                    if ('geolocation' in navigator) {
-                        navigator.geolocation.getCurrentPosition((position) => {
-                            setCenterMapDisabled(false);
-                            setUserPosition({latitude: position.coords.latitude, longitude: position.coords.longitude});
-                        });
-                        return true;
+            if (window.localStorage.getItem('geolocationBlocked') !== 'true' && !locationBlocked) {
+                try {
+                    if (isSecureContext) {
+                        if ('geolocation' in navigator) {
+                            navigator.geolocation.getCurrentPosition((position) => {
+                                setCenterMapDisabled(false);
+                                setLocationBlocked(false);
+                                setUserPosition({latitude: position.coords.latitude, longitude: position.coords.longitude});
+                            }, () => {
+                                window.localStorage.setItem('geolocationBlocked', 'true');
+                                setLocationBlocked(true);
+                            });
+                            return true;
+                        } else {
+                            console.info('Geolocation permission not given or feature not available.');
+                        }
                     } else {
-                        console.info('Geolocation permission not given or feature not available.');
+                        console.info('Geolocation is only available in a secure context');
                     }
-                } else {
-                    console.info('Geolocation is only available in a secure context');
+                } catch {
+                    console.debug('Could not get geolocation. Are you using a somewhat modern browser?');
                 }
-            } catch {
-                console.debug('Could not get geolocation. Are you using a somewhat modern browser?');
+            } else {
+                setCenterMapDisabled(false);
+                setLocationBlocked(true);
             }
+            return false;
         };
+
+        window.addEventListener('scroll', () => {
+                setLocationBlocked(false);
+        }, {once: true})
 
         let updateUserPositionInterval = false;
         if (updateUserPosition()) {
@@ -365,11 +381,16 @@ export const ButterflyMap = (props) => {
                 clearInterval(updateUserPositionInterval);
             }
         };
-    }, []);
+    }, [positionRetry, locationBlocked]);
 
     const handleCenterMapClick = () => {
+        if (window.localStorage.getItem('geolocationBlocked') === 'true') {
+            window.localStorage.setItem('geolocationBlocked', 'false');
+        }
         if (userPosition) {
             doMapMove(userPosition, false);
+        } else {
+            setPositionRetry(!positionRetry);
         }
     };
 
@@ -409,7 +430,10 @@ export const ButterflyMap = (props) => {
                     <Markers handleMapMarkerClick={handleMapMarkerClick} displayPointTypes={displayPointTypes}/>
                     <AttributionControl compact={true}/>
                 </ReactMapGL>
-                <CenterMapButton disabled={centerMapDisabled} onClick={handleCenterMapClick}>
+                <CenterMapButton
+                    title={locationBlocked ? props.localStrings?.location_permission_needed ?? 'In order to center the map, you have to allow this website to use your current position' : ''}
+                    disabled={centerMapDisabled}
+                    onClick={handleCenterMapClick}>
                     {props.localStrings?.centerMap ?? 'Center map on current location'}
                 </CenterMapButton>
             </MapContainer>
