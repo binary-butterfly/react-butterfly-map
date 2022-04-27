@@ -4,6 +4,12 @@
   "license": "MIT",
   "private": false,
   "main": "dist/react-butterfly-map.min.js",
+  "jsnext:main": "src/js/components/ButterflyMap.js",
+  "files": [
+    "dist",
+    "src/js/components",
+    "src/js/data"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/binary-butterfly/react-butterfly-map.git"
