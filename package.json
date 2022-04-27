@@ -1,9 +1,15 @@
 {
   "name": "react-butterfly-map",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "license": "MIT",
   "private": false,
   "main": "dist/react-butterfly-map.min.js",
+  "jsnext:main": "src/js/components/ButterflyMap.js",
+  "files": [
+    "dist",
+    "src/js/components",
+    "src/js/data"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/binary-butterfly/react-butterfly-map.git"
