@@ -1,58 +1,48 @@
 {
   "name": "react-butterfly-map",
-  "version": "0.8.3",
+  "version": "1.0.0-rc1",
   "license": "MIT",
   "private": false,
-  "main": "dist/react-butterfly-map.min.js",
-  "jsnext:main": "src/js/components/ButterflyMap.js",
+  "main": "dist/reactButterflyMap.umd.cjs",
+  "module": "dist/reactButterflyMap.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/reactButterflyMap.js",
+      "require": "./dist/reactButterflyMap.umd.cjs"
+    }
+  },
   "files": [
-    "dist",
-    "src/js/components",
-    "src/js/data"
+    "dist/*"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/binary-butterfly/react-butterfly-map.git"
   },
   "scripts": {
-    "watch": "rollup -c rollup.config.js -w",
-    "build:dev": "rollup -c rollup.config.js",
-    "build:prod": "NODE_ENV=production rollup -c rollup.config.js",
-    "browse": "browser-sync start --s --ss build --index assets/index.html --files dist/* --no-notify",
-    "start": "npm-run-all --parallel watch browse",
+    "build:dev": "vite build",
+    "build:prod": "NODE_ENV=production vite build",
+    "start": "vite",
     "prepublishOnly": "npm run build:prod"
   },
   "devDependencies": {
-    "@babel/plugin-transform-runtime": "^7.16.4",
-    "@babel/preset-env": "^7.16.4",
-    "@babel/preset-react": "^7.16.0",
-    "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-alias": "^3.1.8",
-    "@rollup/plugin-commonjs": "^21.0.1",
-    "@rollup/plugin-node-resolve": "^13.1.1",
-    "@rollup/plugin-replace": "^3.0.0",
-    "@svgr/rollup": "^6.2.0",
-    "babel-plugin-styled-components": "^2.0.1",
-    "browser-sync": "^3.0.2",
-    "npm-run-all": "^4.1.5",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
     "prop-types": "^15.7.2",
-    "rollup": "^2.58.0",
-    "rollup-plugin-node-globals": "^1.4.0",
-    "rollup-plugin-styles": "^4.0.0",
-    "rollup-plugin-terser": "^7.0.2",
-    "sass": "^1.42.1"
+    "vite": "^5.4.11",
+    "vite-plugin-dts": "^4.3.0"
   },
   "peerDependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "dependencies": {
-    "maplibre-gl": "^1.15.2",
-    "react-is": "^17.0.2",
-    "react-map-gl": "^6.1.17",
-    "styled-components": "^5.3.3"
+    "maplibre-gl": "^4.7.1",
+    "react-map-gl": "^7.1.7",
+    "styled-components": "^6.1.13"
   },
-  "description": "This is a small react component that contains an OpenStreetMap widget with search and points of interest features.",
+  "description": "This is a small react component that contains an OpenStreetMap widget with the ability to render points of interest.",
   "bugs": {
     "url": "https://github.com/binary-butterfly/react-butterfly-map/issues"
   },
@@ -61,5 +51,5 @@
     "react",
     "map"
   ],
-  "author": "binaryButterfly GmbH"
+  "author": "binary butterfly GmbH"
 }

@@ -11,7 +11,7 @@ import {terser} from 'rollup-plugin-terser';
 const env = process.env.NODE_ENV;
 
 const config = {
-    input: 'assets/js/Root.js',
+    input: 'assets/js/components/ButterflyMap.js',
     output: {
         file: 'dist/react-butterfly-map.js',
         format: 'cjs',
