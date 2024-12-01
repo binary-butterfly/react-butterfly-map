@@ -10,6 +10,10 @@
     ".": {
       "import": "./dist/reactButterflyMap.js",
       "require": "./dist/reactButterflyMap.umd.cjs"
+    },
+    "./dist/style.css": {
+      "import": "./dist/style.css",
+      "require": "./dist/style.css"
     }
   },
   "files": [
