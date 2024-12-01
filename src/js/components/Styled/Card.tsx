@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 
-export const Card = styled.div`
+interface CardProps {
+    selected?: boolean,
+}
+
+export const Card = styled.div<CardProps>`
   margin: ${props => props.selected ? '0.25rem 1rem 1rem' : '1rem'};
   flex-shrink: 0;
   z-index: 1000;
@@ -9,7 +13,7 @@ export const Card = styled.div`
           : '15rem'};
 `;
 
-export const CardContent = styled.div`
+export const CardContent = styled.div<CardProps>`
   padding: ${props => props.selected ? '0.75rem' : '0.5rem'};
   font-size: ${props => props.selected ? '1.25rem' : '1rem'};
   border: 1px solid;
