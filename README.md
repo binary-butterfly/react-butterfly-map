@@ -1,6 +1,6 @@
 # ReactButterflyMap
 
-This is a small react component that contains an OpenStreetMap widget with points of interest .
+This is a small react component that contains an OpenStreetMap widget with points of interest.
 
 ## Current state
 
