@@ -15,7 +15,7 @@ import {completeTheme} from '../Helpers/themeHelpers';
 import {completeLocalStrings} from '../Helpers/localisationHelpers';
 import Markers from './Markers';
 
-export const ButterflyMap = (props: ButterflyMapProps) => {
+const ButterflyMap = (props: ButterflyMapProps) => {
     const localStrings = completeLocalStrings(props.localStrings);
     const [position, setPosition] = React.useState(props.center);
     const [reduceMotion, setReduceMotion] = React.useState<boolean>(() => {
@@ -188,3 +188,5 @@ type ButterflyMapProps = {
     localStrings?: PartialLocalStrings,
     customFilters?: CustomFilter[],
 }
+
+export default ButterflyMap;

@@ -1,12 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import styled from 'styled-components';
-import {ButterflyMap} from '../components/ButterflyMap';
+import ButterflyMap from '../components/ButterflyMap';
 import ExamplePointCard from '../components/examples/ExamplePointCard';
 import SpecialExampleMarker1 from '../components/examples/SpecialExampleMarker1';
 import ExampleMarker2 from '../components/examples/ExampleMarker2';
 import ExampleMarker1 from '../components/examples/ExampleMarker1';
 import ExampleSidebarPoint from '../components/examples/ExampleSidebarPoint';
+import {PoiCardProps} from '../Types/types';
 
 const Main = styled.div`
     width: 100%;
@@ -43,7 +44,7 @@ const Root = () => {
                           {
                               uuid: 'example-poi-2',
                               position: {latitude: 47.075211, longitude: 13.834638},
-                              CardComponent: (props) => <ExamplePointCard  {...props}
+                              CardComponent: (props: PoiCardProps) => <ExamplePointCard  {...props}
                                                                            point={{
                                                                                uuid: 'example-poi-2',
                                                                                position: {latitude: 47.075211, longitude: 13.834638},

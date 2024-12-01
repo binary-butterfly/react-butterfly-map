@@ -16,7 +16,7 @@ export default defineConfig(({mode}) => {
         build: {
             sourcemap: true,
             lib: {
-                entry: resolve(__dirname, 'src/js/components/ButterflyMap.tsx'),
+                entry: resolve(__dirname, 'src/js/main.ts'),
                 name: 'ReactButterflyMap',
                 fileName: 'reactButterflyMap',
             },

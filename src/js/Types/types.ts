@@ -1,5 +1,4 @@
 import React from 'react';
-import ExamplePointCard from '../components/examples/ExamplePointCard';
 
 export type Position = {
     latitude: number,
@@ -8,7 +7,7 @@ export type Position = {
 
 export type handlePoiClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, position: Position) => void;
 export type PoiIconFunction = (props: {style: {width: string, height: string}}) => React.JSX.Element;
-type PoiCardProps = {
+export type PoiCardProps = {
     handlePoiClick: handlePoiClick,
     selected: boolean,
     userPosition?: Position,
