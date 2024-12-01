@@ -1,6 +1,6 @@
 {
   "name": "react-butterfly-map",
-  "version": "1.0.0-rc1",
+  "version": "1.0.0-rc2",
   "license": "MIT",
   "private": false,
   "main": "dist/reactButterflyMap.umd.cjs",
@@ -10,6 +10,10 @@
     ".": {
       "import": "./dist/reactButterflyMap.js",
       "require": "./dist/reactButterflyMap.umd.cjs"
+    },
+    "./dist/style.css": {
+      "import": "./dist/style.css",
+      "require": "./dist/style.css"
     }
   },
   "files": [
