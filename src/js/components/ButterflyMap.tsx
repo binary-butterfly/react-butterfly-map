@@ -15,7 +15,7 @@ import {completeTheme} from '../Helpers/themeHelpers';
 import {completeLocalStrings} from '../Helpers/localisationHelpers';
 import Markers from './Markers';
 
-const ButterflyMap = (props: ButterflyMapProps) => {
+const ButterflyMap = (props: ButterflyMapProps | ButterflyMapPropsWithPagination) => {
     const localStrings = completeLocalStrings(props.localStrings);
     const [position, setPosition] = React.useState(props.center);
     const [reduceMotion, setReduceMotion] = React.useState<boolean>(() => {
@@ -170,10 +170,12 @@ const ButterflyMap = (props: ButterflyMapProps) => {
         {sortedPointsOfInterest.length > 0 &&
             <PointBar userPosition={userPosition}
                       localStrings={localStrings}
-                      page={paginationPage}
-                      setPage={setPaginationPage}
+                      page={props.paginationPage ?? paginationPage}
+                      setPage={props.setPaginationPage ?? setPaginationPage}
                       displayPoints={sortedPointsOfInterest}
                       handlePoiClick={handlePoiClick}
+                      entriesPerPage={entriesPerPage}
+                      setEntriesPerPage={setEntriesPerPage}
             />}
     </ThemeProvider>;
 };
@@ -187,6 +189,13 @@ type ButterflyMapProps = {
     theme?: PartialTheme,
     localStrings?: PartialLocalStrings,
     customFilters?: CustomFilter[],
+}
+
+type ButterflyMapPropsWithPagination = ButterflyMapProps & {
+    entriesPerPage: number,
+    setEntriesPerPage: () => void,
+    paginationPage: number,
+    setPaginationPage: () => void,
 }
 
 export default ButterflyMap;

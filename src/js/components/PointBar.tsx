@@ -22,14 +22,22 @@ type PointBarProps = {
     localStrings: LocalStrings,
 }
 
-const PointBar = (props: PointBarProps) => {
+type PointBarPropsWithPage = PointBarProps & {
+    entriesPerPage: number,
+    setEntriesPerPage: () => void,
+}
+
+const PointBar = (props: PointBarProps | PointBarPropsWithPage) => {
     const [entriesPerPage, _setEntriesPerPage] = React.useState<number>(window.innerWidth < 1000 ? 4 : 8);
-    const {page, setPage, displayPoints, localStrings, handlePoiClick, userPosition} = props;
 
     const setEntriesPerPage = (newEntriesPerPage: number) => {
         _setEntriesPerPage(newEntriesPerPage);
         setPage(1);
     };
+
+    const {page, setPage, displayPoints, localStrings, handlePoiClick, userPosition} = props;
+
+
 
     let paginatedPoints = [];
     for (let c = 0; c < entriesPerPage; c++) {
@@ -47,8 +55,8 @@ const PointBar = (props: PointBarProps) => {
         </CardContainer>
         <Pagination page={page}
                     setPage={setPage}
-                    entriesPerPage={entriesPerPage}
-                    setEntriesPerPage={setEntriesPerPage}
+                    entriesPerPage={props.entriesPerPage ?? entriesPerPage}
+                    setEntriesPerPage={props.setEntriesPerPage ?? setEntriesPerPage}
                     entryCount={displayPoints.length}
                     localStrings={localStrings}
         />
