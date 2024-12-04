@@ -172,7 +172,9 @@ const ButterflyMap = (props: ButterflyMapProps) => {
                          width: 'fit',
                          height: props.height,
                      }}>
-                    <Markers handleMapMarkerClick={handleMapMarkerClick} pointsOfInterest={sortedPointsOfInterest}/>
+                    <Markers handleMapMarkerClick={handleMapMarkerClick}
+                             pointsOfInterest={sortedPointsOfInterest}
+                             disabledCards={props.disableCards}/>
                 </Map>
                 <CenterMapButton title={locationBlocked ? localStrings.location_permission_needed : ''}
                                  disabled={centerMapDisabled}
