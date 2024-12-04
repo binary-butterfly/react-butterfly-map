@@ -6,9 +6,9 @@ import PaginationButtons from './Styled/Pagination/PaginationButtons';
 
 type PaginationProps = {
     page: number,
-    setPage: React.Dispatch<React.SetStateAction<number>> | (() => void),
+    setPage: React.Dispatch<React.SetStateAction<number>> | ((page: number) => void),
     entriesPerPage: number,
-    setEntriesPerPage: (page: number) => void,
+    setEntriesPerPage: React.Dispatch<React.SetStateAction<number>> | ((page: number) => void),
     entryCount: number,
     localStrings: LocalStrings,
 }
