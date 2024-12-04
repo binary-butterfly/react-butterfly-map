@@ -11,6 +11,7 @@ type PaginationProps = {
     setEntriesPerPage: React.Dispatch<React.SetStateAction<number>> | ((page: number) => void),
     entryCount: number,
     localStrings: LocalStrings,
+    c: number,
 }
 
 const Pagination = React.memo((props: PaginationProps) => {
@@ -36,7 +37,7 @@ const Pagination = React.memo((props: PaginationProps) => {
         <div>
             <select value={entriesPerPage}
                     onChange={(e) => setEntriesPerPage(Number(e.target.value))}
-                    id="react-butterfly-map-pagination-entries-per-page">
+                    id={"react-butterfly-map-pagination-entries-per-page" + String(props.c)}>
                 <option value={2}>2</option>
                 <option value={4}>4</option>
                 <option value={5}>5</option>
@@ -46,7 +47,7 @@ const Pagination = React.memo((props: PaginationProps) => {
                 <option value={25}>25</option>
                 <option value={50}>50</option>
             </select>
-            <label htmlFor="react-butterfly-map-pagination-entries-per-page">{localStrings.entriesPerPage}</label>
+            <label htmlFor={"react-butterfly-map-pagination-entries-per-page" + String(props.c)}>{localStrings.entriesPerPage}</label>
             <span>{localStrings.showing} {entriesPerPage * (page - 1) + 1}-{mostEntries > entryCount ? entryCount : mostEntries} {localStrings.of} {entryCount}.</span>
         </div>
     </PaginationMeta>;

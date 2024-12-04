@@ -42,7 +42,7 @@ const ButterflyMap = (props: ButterflyMapProps) => {
 
     React.useEffect(() => {
         let found = props.paginationPage === undefined;
-        for (const serverSideField of [props.setPaginationPage, props.entriesPerPage, props.setEntriesPerPage]) {
+        for (const serverSideField of [props.setPaginationPage, props.entriesPerPage, props.setEntriesPerPage, props.totalCount]) {
             if ((serverSideField === undefined) !== found) {
                 throw new Error('react butterfly map error: When one of the server side pagination props is set, all of them have to be.');
             }
@@ -185,7 +185,7 @@ const ButterflyMap = (props: ButterflyMapProps) => {
                       handlePoiClick={handlePoiClick}
                       entriesPerPage={props.entriesPerPage}
                       setEntriesPerPage={props.setEntriesPerPage}
-            />}
+                      totalCount={props.totalCount}/>}
     </ThemeProvider>;
 };
 
@@ -202,6 +202,7 @@ type ButterflyMapProps = {
     setEntriesPerPage?: React.Dispatch<React.SetStateAction<number>>,
     paginationPage?: number,
     setPaginationPage?: React.Dispatch<React.SetStateAction<number>>,
+    totalCount?: number,
 }
 
 export default ButterflyMap;
