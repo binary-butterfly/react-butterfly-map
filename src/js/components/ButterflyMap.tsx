@@ -65,12 +65,16 @@ const ButterflyMap = (props: ButterflyMapProps) => {
             setPaginationPage(1);
         }
 
-        setSortedPointsOfInterest(
-            newPoints.sort((a: PointOfInterest, b: PointOfInterest): number => {
-                return calculateDistance(position, a.position) - calculateDistance(position, b.position);
-            }),
-        );
-        setClosestPointOfInterest(newPoints[0]);
+        if (props.disableCards) {
+            setSortedPointsOfInterest(newPoints);
+        } else {
+            setSortedPointsOfInterest(
+                newPoints.sort((a: PointOfInterest, b: PointOfInterest): number => {
+                    return calculateDistance(position, a.position) - calculateDistance(position, b.position);
+                }),
+            );
+            setClosestPointOfInterest(newPoints[0]);
+        }
     }, [props.pointsOfInterest, position]);
 
     const theme = completeTheme(reduceMotion, props.theme);
@@ -152,11 +156,12 @@ const ButterflyMap = (props: ButterflyMapProps) => {
                     setHideMap={setHideMap}
         />
         {!hideMap && <MapAndBarContainer>
-            <MapSidebar data-showing={sidebarShowing} height={props.height}>
-                {closestPointOfInterest && <closestPointOfInterest.SidebarComponent closeSidebar={() => setSidebarShowing(false)}
-                                                                                    handlePoiClick={handlePoiClick}
-                                                                                    userPosition={userPosition}/>}
-            </MapSidebar>
+            {!props.disableCards &&
+                <MapSidebar data-showing={sidebarShowing} height={props.height}>
+                    {closestPointOfInterest && <closestPointOfInterest.SidebarComponent closeSidebar={() => setSidebarShowing(false)}
+                                                                                        handlePoiClick={handlePoiClick}
+                                                                                        userPosition={userPosition}/>}
+                </MapSidebar>}
             <MapContainer>
                 <Map mapStyle={props.tileServer}
                      {...viewState}
@@ -176,7 +181,7 @@ const ButterflyMap = (props: ButterflyMapProps) => {
                 </CenterMapButton>
             </MapContainer>
         </MapAndBarContainer>}
-        {sortedPointsOfInterest.length > 0 &&
+        {(!props.disableCards && sortedPointsOfInterest.length > 0) &&
             <PointBar userPosition={userPosition}
                       localStrings={localStrings}
                       page={props.paginationPage ?? paginationPage}
@@ -203,6 +208,7 @@ type ButterflyMapProps = {
     paginationPage?: number,
     setPaginationPage?: React.Dispatch<React.SetStateAction<number>>,
     totalCount?: number,
+    disableCards?: boolean,
 }
 
 export default ButterflyMap;
