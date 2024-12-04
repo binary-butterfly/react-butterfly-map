@@ -6,6 +6,7 @@ import styled from 'styled-components';
 type MarkersProps = {
     pointsOfInterest: PointOfInterest[],
     handleMapMarkerClick: (position: Position) => void,
+    disabledCards?: boolean,
 }
 
 const Markers = React.memo((props: MarkersProps): React.JSX.Element => {
@@ -14,8 +15,8 @@ const Markers = React.memo((props: MarkersProps): React.JSX.Element => {
     return <>
         {pointsOfInterest.map((point) =>
             <PointerDiv id={'react-butterfly-map-pointer-' + point.uuid} key={point.uuid}>
-                <Marker onClick={() => handleMapMarkerClick(point.position)} {...point.position}>
-                        <point.MarkerComponent style={{height: '50px', width: '50px'}}/>
+                <Marker onClick={props.disabledCards ? undefined : () => handleMapMarkerClick(point.position)} {...point.position}>
+                    <point.MarkerComponent style={{height: '50px', width: '50px'}}/>
                 </Marker>
             </PointerDiv>,
         )}

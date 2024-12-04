@@ -1,6 +1,6 @@
 {
   "name": "react-butterfly-map",
-  "version": "1.0.0-rc5",
+  "version": "1.0.0-rc6",
   "license": "MIT",
   "private": false,
   "main": "dist/reactButterflyMap.umd.cjs",
