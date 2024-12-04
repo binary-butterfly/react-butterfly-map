@@ -22,6 +22,7 @@ type PointBarProps = {
     localStrings: LocalStrings,
     entriesPerPage?: number,
     setEntriesPerPage?: React.Dispatch<React.SetStateAction<number>>,
+    totalCount?: number,
 }
 
 const PointBar = (props: PointBarProps) => {
@@ -60,7 +61,7 @@ const PointBar = (props: PointBarProps) => {
                     setPage={setPage}
                     entriesPerPage={props.entriesPerPage ?? entriesPerPage}
                     setEntriesPerPage={props.setEntriesPerPage ?? setEntriesPerPage}
-                    entryCount={displayPoints.length}
+                    entryCount={props.totalCount ?? displayPoints.length}
                     localStrings={localStrings}/>
     </>;
 };
