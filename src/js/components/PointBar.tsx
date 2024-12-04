@@ -20,6 +20,8 @@ type PointBarProps = {
     handlePoiClick: handlePoiClick,
     userPosition?: Position,
     localStrings: LocalStrings,
+    entriesPerPage?: number,
+    setEntriesPerPage?: React.Dispatch<React.SetStateAction<number>>,
 }
 
 type PointBarPropsWithPage = PointBarProps & {

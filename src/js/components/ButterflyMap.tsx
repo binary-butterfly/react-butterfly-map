@@ -15,7 +15,7 @@ import {completeTheme} from '../Helpers/themeHelpers';
 import {completeLocalStrings} from '../Helpers/localisationHelpers';
 import Markers from './Markers';
 
-const ButterflyMap = (props: ButterflyMapProps | ButterflyMapPropsWithPagination) => {
+const ButterflyMap = (props: ButterflyMapProps) => {
     const localStrings = completeLocalStrings(props.localStrings);
     const [position, setPosition] = React.useState(props.center);
     const [reduceMotion, setReduceMotion] = React.useState<boolean>(() => {
@@ -39,6 +39,15 @@ const ButterflyMap = (props: ButterflyMapProps | ButterflyMapPropsWithPagination
         zoom: props.zoom ?? 8,
     });
     const updateUserPositionInterval = React.useRef<number>();
+
+    React.useEffect(() => {
+        let found = props.paginationPage === undefined;
+        for (const serverSideField of [props.setPaginationPage, props.entriesPerPage, props.setEntriesPerPage]) {
+            if ((serverSideField === undefined) !== found) {
+                throw new Error('react butterfly map error: When one of the server side pagination props is set, all of them have to be.');
+            }
+        }
+    }, []);
 
     React.useEffect(() => {
         window.addEventListener('scroll', () => {
@@ -174,8 +183,8 @@ const ButterflyMap = (props: ButterflyMapProps | ButterflyMapPropsWithPagination
                       setPage={props.setPaginationPage ?? setPaginationPage}
                       displayPoints={sortedPointsOfInterest}
                       handlePoiClick={handlePoiClick}
-                      entriesPerPage={entriesPerPage}
-                      setEntriesPerPage={setEntriesPerPage}
+                      entriesPerPage={props.entriesPerPage}
+                      setEntriesPerPage={props.setEntriesPerPage}
             />}
     </ThemeProvider>;
 };
@@ -189,13 +198,10 @@ type ButterflyMapProps = {
     theme?: PartialTheme,
     localStrings?: PartialLocalStrings,
     customFilters?: CustomFilter[],
-}
-
-type ButterflyMapPropsWithPagination = ButterflyMapProps & {
-    entriesPerPage: number,
-    setEntriesPerPage: () => void,
-    paginationPage: number,
-    setPaginationPage: () => void,
+    entriesPerPage?: number,
+    setEntriesPerPage?: React.Dispatch<React.SetStateAction<number>>,
+    paginationPage?: number,
+    setPaginationPage?: React.Dispatch<React.SetStateAction<number>>,
 }
 
 export default ButterflyMap;
