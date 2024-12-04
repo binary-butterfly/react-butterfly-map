@@ -20,25 +20,36 @@ type PointBarProps = {
     handlePoiClick: handlePoiClick,
     userPosition?: Position,
     localStrings: LocalStrings,
+    entriesPerPage?: number,
+    setEntriesPerPage?: React.Dispatch<React.SetStateAction<number>>,
 }
 
 const PointBar = (props: PointBarProps) => {
-    const [entriesPerPage, _setEntriesPerPage] = React.useState<number>(window.innerWidth < 1000 ? 4 : 8);
     const {page, setPage, displayPoints, localStrings, handlePoiClick, userPosition} = props;
+
+    const [entriesPerPage, _setEntriesPerPage] = React.useState<number>(window.innerWidth < 1000 ? 4 : 8);
+    const [paginatedPoints, setPaginatedPoints] = React.useState<PointOfInterest[]>([]);
 
     const setEntriesPerPage = (newEntriesPerPage: number) => {
         _setEntriesPerPage(newEntriesPerPage);
         setPage(1);
     };
 
-    let paginatedPoints = [];
-    for (let c = 0; c < entriesPerPage; c++) {
-        const point = displayPoints[entriesPerPage * (page - 1) + c];
-        if (point === undefined) {
-            break;
+    React.useEffect(() => {
+        if (props.setEntriesPerPage) {
+            setPaginatedPoints(displayPoints);
+        } else {
+            const newPaginatedPoints = [];
+            for (let c = 0; c < entriesPerPage; c++) {
+                const point = displayPoints[entriesPerPage * (page - 1) + c];
+                if (point === undefined) {
+                    break;
+                }
+                newPaginatedPoints.push(point);
+            }
+            setPaginatedPoints(newPaginatedPoints);
         }
-        paginatedPoints.push(point);
-    }
+    }, [page, displayPoints, entriesPerPage]);
 
     return <>
         <CardContainer>
@@ -47,11 +58,10 @@ const PointBar = (props: PointBarProps) => {
         </CardContainer>
         <Pagination page={page}
                     setPage={setPage}
-                    entriesPerPage={entriesPerPage}
-                    setEntriesPerPage={setEntriesPerPage}
+                    entriesPerPage={props.entriesPerPage ?? entriesPerPage}
+                    setEntriesPerPage={props.setEntriesPerPage ?? setEntriesPerPage}
                     entryCount={displayPoints.length}
-                    localStrings={localStrings}
-        />
+                    localStrings={localStrings}/>
     </>;
 };
 

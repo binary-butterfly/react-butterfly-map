@@ -41,6 +41,15 @@ const ButterflyMap = (props: ButterflyMapProps) => {
     const updateUserPositionInterval = React.useRef<number>();
 
     React.useEffect(() => {
+        let found = props.paginationPage === undefined;
+        for (const serverSideField of [props.setPaginationPage, props.entriesPerPage, props.setEntriesPerPage]) {
+            if ((serverSideField === undefined) !== found) {
+                throw new Error('react butterfly map error: When one of the server side pagination props is set, all of them have to be.');
+            }
+        }
+    }, []);
+
+    React.useEffect(() => {
         window.addEventListener('scroll', () => {
             setLocationBlocked(false);
         }, {once: true});
@@ -170,10 +179,12 @@ const ButterflyMap = (props: ButterflyMapProps) => {
         {sortedPointsOfInterest.length > 0 &&
             <PointBar userPosition={userPosition}
                       localStrings={localStrings}
-                      page={paginationPage}
-                      setPage={setPaginationPage}
+                      page={props.paginationPage ?? paginationPage}
+                      setPage={props.setPaginationPage ?? setPaginationPage}
                       displayPoints={sortedPointsOfInterest}
                       handlePoiClick={handlePoiClick}
+                      entriesPerPage={props.entriesPerPage}
+                      setEntriesPerPage={props.setEntriesPerPage}
             />}
     </ThemeProvider>;
 };
@@ -187,6 +198,10 @@ type ButterflyMapProps = {
     theme?: PartialTheme,
     localStrings?: PartialLocalStrings,
     customFilters?: CustomFilter[],
+    entriesPerPage?: number,
+    setEntriesPerPage?: React.Dispatch<React.SetStateAction<number>>,
+    paginationPage?: number,
+    setPaginationPage?: React.Dispatch<React.SetStateAction<number>>,
 }
 
 export default ButterflyMap;
